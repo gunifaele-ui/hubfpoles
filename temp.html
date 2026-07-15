@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GestaEng - Fluxo de Engenharia Complementar</title>
+    <!-- Tailwind CSS para Estilização Premium -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para Ícones de Alta Qualidade -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter para Legibilidade Excepcional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Alpine.js para Reatividade Rápida sem complexidade de build -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom scrollbar para visual premium */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden text-slate-800" x-data="appState()">
+
+    <!-- Conteúdo Principal - Área de rolagem dinâmica acima da navegação inferior -->
+    <main class="flex-1 overflow-y-auto pb-24 md:pb-28">
+        
+        <!-- HEADER GLOBAL -->
+        <header class="bg-[#1A1A1A] shadow-md sticky top-0 z-30 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="text-white font-light tracking-[0.25em] text-xl font-sans">F:POLES</span>
+                <span class="w-[1px] h-4 bg-gray-600"></span>
+                <span class="text-gray-400 text-xs tracking-wider font-light">Compatibilização de Projetos Complementares</span>
+            </div>
+        </div>
+    </header>
+
+        <!-- AREA DE ALERTA CUSTOMIZADA (Toast no topo) -->
+        <div 
+            x-show="toast.show" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 -translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-4"
+            class="fixed top-16 left-0 right-0 z-50 px-4 pointer-events-none flex justify-center"
+            style="display: none;"
+        >
+            <div class="bg-slate-900 text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2.5 text-xs md:text-sm max-w-sm pointer-events-auto">
+                <i :class="toast.icon + ' ' + toast.color"></i>
+                <span x-text="toast.message" class="font-medium"></span>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-4 py-6">
+            
+            <!-- TELA 1: DASHBOARD -->
+            <div x-show="currentTab === 'dashboard'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2">
+                
+
+                <!-- CARDS DE PANORAMA GERAL -->
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Panorama Geral</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Com Arquitetura -->
+                    <div 
+                        @click="filterByDashboardMetric('naArq')"
+                        class="bg-white p-5 rounded-2xl border border-slate-100 hover:border-indigo-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
+                    >
+                        <div>
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Com Arquitetura</span>
+                            <div class="flex items-baseline gap-2 mt-2">
+                                <span class="text-3xl font-bold text-black group-hover:scale-105 transition" x-text="getMetrics().naArq">0</span>
+                                <span class="text-xs text-slate-500 font-medium">projetos na mesa</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-100 text-black p-3 rounded-xl">
+                            <i class="fa-solid fa-file-signature text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Com Engenheiro -->
+                    <div 
+                        @click="filterByDashboardMetric('comProj')"
+                        class="bg-white p-5 rounded-2xl border border-slate-100 hover:border-amber-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
+                    >
+                        <div>
+                            <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Com Engenheiro</span>
+                            <div class="flex items-baseline gap-2 mt-2">
+                                <span class="text-3xl font-bold text-amber-600 group-hover:scale-105 transition" x-text="getMetrics().comProj">0</span>
+                                <span class="text-xs text-amber-600 font-medium font-semibold">aguardando retorno</span>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                            <i class="fa-solid fa-user-gear text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Prazos Estourados -->
+                    <div 
+                        @click="filterByDashboardMetric('atrasados')"
+                        class="bg-white p-5 rounded-2xl border border-slate-100 hover:border-rose-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
+                    >
+                        <div>
+                            <span class="text-xs font-semibold text-rose-600 uppercase tracking-wider font-bold">Prazos Estourados</span>
+                            <div class="flex items-baseline gap-2 mt-2">
+                                <span class="text-3xl font-bold text-rose-600 group-hover:scale-105 transition" x-text="getMetrics().atrasados">0</span>
+                                <span class="text-xs text-rose-600 font-medium font-semibold">revisões em atraso</span>
+                            </div>
+                        </div>
+                        <div class="bg-rose-50 text-rose-600 p-3 rounded-xl">
+                            <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTADORES DE COMPATIBILIZACOES PENDENTES POR DISCIPLINA -->
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Gargalos Pendentes por Especialidade</h3>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5 mb-8">
+                    <template x-for="disc in Object.keys(disciplinasConfig)" :key="disc">
+                        <div 
+                            @click="filterByDisciplineOnTab2(disc)"
+                            class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-indigo-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex flex-col justify-between relative overflow-hidden group"
+                        >
+                            <!-- Pequena barra decorativa superior com a cor da disciplina -->
+                            <div class="absolute top-0 left-0 right-0 h-1" :class="disciplinasConfig[disc].bg"></div>
+                            
+                            <div class="flex items-center gap-2.5 mb-3">
+                                <span class="p-2 rounded-xl text-sm" :class="disciplinasConfig[disc].bg + ' ' + disciplinasConfig[disc].color">
+                                    <i :class="disciplinasConfig[disc].icon + ' text-base'"></i>
+                                </span>
+                                <span class="text-xs font-bold text-slate-700 group-hover:text-black transition" x-text="disciplinasConfig[disc].nome"></span>
+                            </div>
+
+                            <div class="flex items-baseline justify-between mt-1">
+                                <span class="text-2xl font-bold text-slate-900" x-text="getPendingCountByDiscipline(disc)">0</span>
+                                <span class="text-[10px] text-slate-400 font-semibold uppercase">Pendentes</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- QUADRO DE PONTOS DE ATENÇÃO IMEDIATA -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                            Atenção Crítica (Atrasos da Arquitetura)
+                        </h3>
+                    </div>
+
+                    <div class="divide-y divide-slate-100 max-h-72 overflow-y-auto pr-1">
+                        <template x-for="item in getCriticalDelays()" :key="item.projectId + '-' + item.discKey">
+                            <div class="py-3 flex justify-between items-center text-xs">
+                                <div>
+                                    <span class="font-bold text-slate-800" x-text="item.projectName"></span>
+                                    <div class="flex gap-2 mt-1 items-center">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold" :class="disciplinasConfig[item.discKey].bg + ' ' + disciplinasConfig[item.discKey].color" x-text="disciplinasConfig[item.discKey].nome"></span>
+                                        <span class="text-slate-400">Resp: <span class="font-medium text-slate-600" x-text="item.arquiteto"></span></span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-rose-600 font-bold block">Atrasado há <span x-text="item.daysDelayed"></span> dias úteis</span>
+                                    <span class="text-[10px] text-slate-400">Prazo era: <span x-text="formatDate(item.limite)"></span></span>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="getCriticalDelays().length === 0">
+                            <div class="py-6 text-center text-slate-400">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mb-2 block"></i>
+                                <span class="font-medium">Nenhum prazo atrasado na arquitetura! Parabéns!</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TELA UNIFICADA: PROJETOS (ATIVOS + TODOS) -->
+            <div x-show="currentTab === 'projetos'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2">
+                
+
+                <!-- SELETOR DE ESCOPO + BUSCAS + FILTRO POR ARQUITETO -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2 w-full justify-between sm:justify-start">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider"><i class="fa-solid fa-filter text-black mr-1"></i> Filtros e Painel</span>
+                            <button 
+                                @click="openNewProjectModal()" 
+                                class="bg-[#1A1A1A] hover:bg-black text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition"
+                            >
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>Novo Projeto</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        
+                        <!-- Alternador Segmentado Moderno -->
+                        <div class="flex bg-slate-100 p-1 rounded-xl w-full sm:w-64">
+                            <button 
+                                @click="filters.statusScope = 'ativos'"
+                                class="flex-1 py-1.5 text-xs font-bold rounded-lg transition"
+                                :class="filters.statusScope === 'ativos' ? 'bg-white text-black shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+                            >
+                                Projetos Ativos
+                            </button>
+                            <button 
+                                @click="filters.statusScope = 'todos'"
+                                class="flex-1 py-1.5 text-xs font-bold rounded-lg transition"
+                                :class="filters.statusScope === 'todos' ? 'bg-white text-black shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+                            >
+                                Todos
+                            </button>
+                        </div>
+
+                        <!-- Filtros Rápidos Ativos -->
+                        <div class="flex flex-wrap gap-2">
+                            <!-- Filtro de Disciplina da Dash -->
+                            <template x-if="filters.discipline">
+                                <div class="flex items-center gap-2 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-xl text-xs text-indigo-800 font-semibold animate-pulse">
+                                    <span>Gargalo: <strong x-text="disciplinasConfig[filters.discipline].nome"></strong></span>
+                                    <button @click="filters.discipline = ''" class="hover:text-indigo-950 ml-1">
+                                        <i class="fa-solid fa-circle-xmark text-sm"></i>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- Filtro de Status da Dash -->
+                            <template x-if="filters.statusFilter">
+                                <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-xl text-xs text-amber-800 font-semibold">
+                                    <span>Status: <strong x-text="filters.statusFilter === 'naArq' ? 'Com Arq' : (filters.statusFilter === 'comProj' ? 'Com Eng' : 'Atrasados')"></strong></span>
+                                    <button @click="filters.statusFilter = ''" class="hover:text-amber-950 ml-1">
+                                        <i class="fa-solid fa-circle-xmark text-sm"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <!-- Campo de Busca -->
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input 
+                                type="text" 
+                                placeholder="Buscar por nome, código ou responsável..." 
+                                x-model="filters.search"
+                                class="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs md:text-sm pl-9 pr-4 py-2.5 rounded-xl border border-slate-100 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition"
+                            >
+                        </div>
+
+                        <!-- Filtro por Arquiteto Responsável -->
+                        <div class="flex items-center gap-2 min-w-[180px]">
+                            <span class="text-xs font-semibold text-slate-400 whitespace-nowrap"><i class="fa-solid fa-user-circle"></i> Arquiteto:</span>
+                            <select 
+                                x-model="filters.architect"
+                                class="w-full bg-slate-50 hover:bg-slate-100/70 border border-slate-100 text-xs py-2.5 px-3 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition font-medium"
+                            >
+                                <option value="">Todos</option>
+                                <template x-for="arch in getArchitects()" :key="arch">
+                                    <option :value="arch" x-text="arch"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <!-- Ordenações -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-slate-400 whitespace-nowrap"><i class="fa-solid fa-arrow-down-wide-short"></i> Ordenar:</span>
+                            <select 
+                                x-model="filters.orderBy"
+                                class="bg-slate-50 hover:bg-slate-100/70 border border-slate-100 text-xs py-2.5 px-3 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition font-medium"
+                            >
+                                <option value="codigo_desc">Código (Mais Novo Primeiro)</option>
+                                <option value="nome">Nome do Projeto</option>
+                                <option value="codigo">Código (Crescente)</option>
+                                <option value="urgencia">Mais Urgente (Prazo)</option>
+                                <option value="arquiteto">Arquiteto Responsável</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEEDBACK DE NENHUM RESULTADO -->
+                <template x-if="getFilteredProjects().length === 0">
+                    <div class="bg-white border border-slate-200 rounded-2xl py-12 px-4 text-center">
+                        <div class="bg-slate-50 text-slate-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-regular fa-folder-open text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700 text-base">Nenhum projeto encontrado</h4>
+                        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto" x-text="filters.statusScope === 'ativos' ? 'Tente alterar os filtros de busca, alternar para a aba \'Todos\' ou criar um novo projeto.' : 'Tente alterar os termos da busca.'"></p>
+                    </div>
+                </template>
+
+                <!-- LISTAGEM DE CARDS DOS EMPREENDIMENTOS (LINEAR) -->
+                <div class="space-y-3">
+                    <template x-for="proj in getFilteredProjects()" :key="proj.id">
+                        <div class="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+                            
+                            <!-- Visualização Principal (Linear e Compacta) -->
+                            <div class="p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <!-- Lado Esquerdo: Identificação -->
+                                <div class="flex items-center gap-3.5 flex-1 min-w-0">
+                                    <div class="bg-slate-100 border border-slate-300 text-black px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider whitespace-nowrap shadow-sm" x-text="proj.numero"></div>
+                                    <div class="truncate">
+                                        <h3 class="font-bold text-slate-900 text-sm md:text-base hover:text-black cursor-pointer flex items-center gap-1.5" @click="openProjectModal(proj)">
+                                            <span x-text="proj.nome"></span>
+                                        </h3>
+                                        <div class="flex items-center gap-1.5 mt-0.5">
+                                            <i class="fa-solid fa-user-circle text-slate-400 text-xs"></i>
+                                            <span class="text-xs font-medium text-slate-500" x-text="'Arq. Responsável: ' + proj.arquiteto"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lado Direito: Atalhos para Disciplinas (Ícones Maiores) e Expandir -->
+                                <div class="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                                    <div class="flex items-center gap-2">
+                                        <template x-for="(disc, discKey) in proj.disciplinas" :key="discKey">
+                                            <button 
+                                                @click="openDisciplineModal(proj, discKey)"
+                                                class="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center relative transition-all duration-150 hover:scale-105 active:scale-95 shadow-sm border"
+                                                :class="getDisciplineIconStyles(disc, discKey)"
+                                                :title="disciplinasConfig[discKey].nome"
+                                            >
+                                                <i :class="disciplinasConfig[discKey].icon + ' text-base md:text-lg'"></i>
+                                                <!-- Pequeno ponto indicador da bola da vez em cima do botão -->
+                                                <span 
+                                                    class="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white"
+                                                    :class="getDisciplineStatusBadge(disc).bg"
+                                                    x-show="disc.status !== 'Não se aplica'"
+                                                ></span>
+                                            </button>
+                                        </template>
+                                    </div>
+
+                                    <!-- Botão de Expandir Painel de Disciplinas -->
+                                    <button 
+                                        @click="toggleProjectExpand(proj.id)"
+                                        class="bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 w-10 h-10 rounded-xl flex items-center justify-center transition border border-slate-100"
+                                        :title="isProjectExpanded(proj.id) ? 'Recolher detalhes' : 'Expandir detalhes'"
+                                    >
+                                        <i class="fa-solid" :class="isProjectExpanded(proj.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Painel Interno de Detalhes Expandido -->
+                            <div 
+                                x-show="isProjectExpanded(proj.id)" 
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 max-h-0"
+                                x-transition:enter-end="opacity-100 max-h-[500px]"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 max-h-[500px]"
+                                x-transition:leave-end="opacity-0 max-h-0"
+                                class="border-t border-slate-100 bg-slate-50/40 p-4"
+                                style="display: none;"
+                            >
+                                <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                                    <template x-for="(disc, discKey) in proj.disciplinas" :key="discKey">
+                                        <div 
+                                            @click="openDisciplineModal(proj, discKey)"
+                                            class="border rounded-xl p-3 cursor-pointer transition-all hover:bg-white relative flex flex-col justify-between h-28"
+                                            :class="getDisciplineCardBorder(disc)"
+                                        >
+                                            <!-- Header da Disciplina -->
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400" x-text="disciplinasConfig[discKey].nome"></span>
+                                                <span class="text-[10px] font-bold" :class="getDisciplineStatusBadge(disc).text">
+                                                    <i :class="disciplinasConfig[discKey].icon"></i>
+                                                </span>
+                                            </div>
+
+                                            <!-- Corpo: Informações Rápidas -->
+                                            <div class="flex-1 flex flex-col justify-center">
+                                                <template x-if="disc.status === 'Não se aplica'">
+                                                    <span class="text-xs text-slate-400 italic font-medium">Não se aplica</span>
+                                                </template>
+                                                
+                                                <template x-if="disc.status === 'Compatibilizado'">
+                                                    <div class="text-emerald-600 font-bold text-xs flex items-center gap-1">
+                                                        <i class="fa-regular fa-circle-check"></i>
+                                                        <span>Aprovado</span>
+                                                    </div>
+                                                </template>
+
+                                                <template x-if="disc.status === 'Em andamento'">
+                                                    <div>
+                                                        <div class="flex items-center justify-between text-xs font-semibold">
+                                                            <span class="text-slate-700">Versão <span x-text="getLastVersionNumber(disc)"></span></span>
+                                                            <span class="text-[10px] px-1.5 py-0.5 rounded-full" :class="getDisciplineStatusBadge(disc).bg + ' ' + getDisciplineStatusBadge(disc).text" x-text="getDisciplineStatusBadge(disc).label"></span>
+                                                        </div>
+                                                        <p class="text-[10px] text-slate-400 mt-1 truncate" x-text="disc.engenheiro ? 'Eng: ' + disc.engenheiro : 'Sem projetista definido'"></p>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            <!-- Data Relevante no rodapé do chip -->
+                                            <div class="text-[9px] text-slate-400 border-t border-slate-100 pt-1.5 flex justify-between items-center mt-1">
+                                                <span x-text="getFooterDateLabel(disc).title"></span>
+                                                <span class="font-bold text-slate-600" x-text="getFooterDateLabel(disc).date"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="mt-3 flex justify-end">
+                                    <button 
+                                        @click="openProjectModal(proj)" 
+                                        class="bg-slate-100 hover:bg-indigo-100 text-black text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition"
+                                    >
+                                        <i class="fa-solid fa-timeline"></i>
+                                        <span>Fluxo Completo & Configurações</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JANELA MODAL: DETALHES DO PROJETO / HISTÓRICO GLOBAL (TIMELINE) -->
+    <div 
+        x-show="modals.project.open" 
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        <div 
+            @click.away="modals.project.open = false"
+            class="bg-white rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+        >
+            <!-- Header Modal -->
+            <div class="bg-indigo-900 text-white px-6 py-5 flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-black text-indigo-100 font-bold px-2.5 py-0.5 rounded text-xs" x-text="modals.project.data?.numero"></span>
+                        <h3 class="text-lg font-bold" x-text="modals.project.data?.nome"></h3>
+                    </div>
+                    <p class="text-xs text-indigo-200 mt-1.5 flex items-center gap-3">
+                        <span><i class="fa-solid fa-user-circle mr-1"></i> Arquiteto Responsável: <span class="font-bold" x-text="modals.project.data?.arquiteto"></span></span>
+                    </p>
+                </div>
+                <button @click="modals.project.open = false" class="text-indigo-200 hover:text-white transition text-lg bg-indigo-850 p-2 rounded-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Corpo Modal -->
+            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Coluna 1: Lista de Disciplinas do Empreendimento -->
+                <div class="lg:col-span-1 space-y-3">
+                    <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Disciplinas do Prédio</h4>
+                    <template x-for="(disc, discKey) in modals.project.data?.disciplinas" :key="discKey">
+                        <div 
+                            @click="selectDisciplineInProject(discKey)"
+                            class="p-3 bg-white border rounded-xl cursor-pointer hover:border-indigo-300 transition flex items-center justify-between animate-fade-in"
+                            :class="modals.project.selectedDiscKey === discKey ? 'border-indigo-600 ring-2 ring-indigo-100' : 'border-slate-200'"
+                        >
+                            <div class="flex items-center gap-3">
+                                <span class="p-2 rounded-lg text-sm" :class="disciplinasConfig[discKey].bg + ' ' + disciplinasConfig[discKey].color">
+                                    <i :class="disciplinasConfig[discKey].icon + ' text-base'"></i>
+                                </span>
+                                <div>
+                                    <span class="text-xs font-bold text-slate-800 block" x-text="disciplinasConfig[discKey].nome"></span>
+                                    <span class="text-[10px] text-slate-400 font-medium" x-text="disc.status"></span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-300" :class="modals.project.selectedDiscKey === discKey ? 'text-black translate-x-1' : ''"></i>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Coluna 2 e 3: Linha do Tempo e Ações da Disciplina Selecionada -->
+                <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 flex flex-col h-full min-h-[400px]">
+                    <!-- Header da Seção de Detalhes -->
+                    <template x-if="modals.project.selectedDiscKey">
+                        <div class="flex-1 flex flex-col justify-between">
+                            
+                            <!-- Informações Básicas da Disciplina e Configuração de Escopo/Status -->
+                            <div>
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-3">
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-base" x-text="disciplinasConfig[modals.project.selectedDiscKey].nome"></h4>
+                                        <!-- Editor de Engenheiro Responsável inline -->
+                                        <div class="mt-1 flex items-center gap-2">
+                                            <span class="text-xs text-slate-400 font-medium">Eng. Projetista:</span>
+                                            <input 
+                                                type="text" 
+                                                x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].engenheiro"
+                                                @blur="saveProjects()"
+                                                placeholder="Definir responsável..."
+                                                class="text-xs font-bold text-black bg-slate-50 border border-slate-100 focus:bg-white rounded px-2 py-0.5 outline-none transition w-44"
+                                            >
+                                        </div>
+                                        <div class="mt-2 flex flex-col sm:flex-row gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600 cursor-pointer">
+                                                <input type="checkbox" x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].arqEnviado" @change="saveProjects(); showSuccessToast('Status do arquitetônico atualizado!')" class="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5">
+                                                <span>Arq. Enviado para o Projetista</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600 cursor-pointer">
+                                                <input type="checkbox" x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].reuniaoApresentacao" @change="saveProjects(); showSuccessToast('Status da reunião de alinhamento atualizado!')" class="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5">
+                                                <span>Reunião de Apresentação Realizada</span>
+                                            </label>
+                                        </div>
+                                        <div class="mt-2 flex flex-col sm:flex-row gap-3 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600 cursor-pointer">
+                                                <input type="checkbox" x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].arqEnviado" @change="saveProjects(); showSuccessToast('Status do arquitetônico atualizado!')" class="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5">
+                                                <span>Arq. Enviado para o Projetista</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600 cursor-pointer">
+                                                <input type="checkbox" x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].reuniaoApresentacao" @change="saveProjects(); showSuccessToast('Status da reunião de alinhamento atualizado!')" class="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5">
+                                                <span>Reunião de Apresentação Realizada</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Seletor de Status Global da Disciplina -->
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-slate-400 font-semibold">Status:</span>
+                                        <select 
+                                            x-model="modals.project.data.disciplinas[modals.project.selectedDiscKey].status"
+                                            @change="handleDisciplineStatusChange(modals.project.selectedDiscKey)"
+                                            class="bg-slate-100 border border-slate-200 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:border-indigo-400 focus:bg-white outline-none"
+                                        >
+                                            <option value="Em andamento">Em andamento</option>
+                                            <option value="Compatibilizado">Compatibilizado / Aprovado</option>
+                                            <option value="Não se aplica">Não se aplica</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- FLUXO DE REVISÕES (HISTÓRICO INFINITO) -->
+                                <div class="mb-6">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Histórico de Versões</span>
+                                        
+                                        <!-- Botão para Iniciar Nova Versão -->
+                                        <button 
+                                            @click="initNewVersionForm()"
+                                            x-show="modals.project.data.disciplinas[modals.project.selectedDiscKey].status === 'Em andamento' && !modals.project.newVersionForm.open"
+                                            class="text-xs bg-slate-100 hover:bg-indigo-100 text-black font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition"
+                                        >
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Entrada de Versão</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- FORMULÁRIO DE NOVA VERSÃO (AÇÃO) -->
+                                    <div 
+                                        x-show="modals.project.newVersionForm.open" 
+                                        class="bg-slate-50 p-4 rounded-xl border border-slate-300 mb-5 relative"
+                                        style="display: none;"
+                                    >
+                                        <h5 class="font-bold text-xs text-slate-700 mb-3 flex items-center gap-1.5">
+                                            <span class="bg-[#1A1A1A] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]" x-text="modals.project.newVersionForm.versao"></span>
+                                            Dando entrada na nova rodada
+                                        </h5>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data de Recebimento</label>
+                                                <input 
+                                                    type="date" 
+                                                    x-model="modals.project.newVersionForm.recebimento"
+                                                    @change="calculateDeadline()"
+                                                    class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-medium outline-none focus:border-indigo-400"
+                                                >
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Prazo de Devolução</label>
+                                                <div class="flex gap-2">
+                                                    <input 
+                                                        type="date" 
+                                                        x-model="modals.project.newVersionForm.limite"
+                                                        @change="recalculateCustomDays()"
+                                                        class="flex-1 bg-white border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 outline-none focus:border-indigo-400"
+                                                    >
+                                                    <div class="bg-slate-100 border border-slate-300 text-black px-2 py-1 rounded-lg flex items-center justify-center text-[10px] font-extrabold whitespace-nowrap">
+                                                        <span x-text="modals.project.newVersionForm.computedDays + ' d úteis'"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-end gap-2">
+                                            <button 
+                                                @click="modals.project.newVersionForm.open = false" 
+                                                class="px-3 py-1.5 border rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-100"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button 
+                                                @click="saveNewVersion()" 
+                                                class="px-3 py-1.5 bg-[#1A1A1A] hover:bg-black text-white rounded-lg text-xs font-bold"
+                                            >
+                                                Registrar Entrada
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- LISTAGEM DA LINHA DO TEMPO -->
+                                    <div class="space-y-4 max-h-56 overflow-y-auto pr-1 animate-fade-in">
+                                        <template x-for="(v, idx) in modals.project.data.disciplinas[modals.project.selectedDiscKey].historico.slice().reverse()" :key="v.versao">
+                                            <div class="border-l-2 border-indigo-200 pl-4 relative py-1">
+                                                <!-- Icone indicador no eixo da linha do tempo -->
+                                                <div class="absolute -left-[7px] top-1.5 bg-[#1A1A1A] text-white w-3 h-3 rounded-full flex items-center justify-center"></div>
+                                                
+                                                <div class="flex justify-between items-start text-xs">
+                                                    <div>
+                                                        <span class="font-extrabold text-slate-800 text-sm">Versão <span x-text="v.versao"></span></span>
+                                                        
+                                                        <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-slate-400">
+                                                            <span>Recebido: <strong class="text-slate-600" x-text="formatDate(v.recebimento)"></strong></span>
+                                                            <span>Prazo: <strong class="text-slate-600" x-text="formatDate(v.limite)"></strong></span>
+                                                        </div>
+
+                                                        <!-- Inputs de Devolução e Retorno Inline -->
+                                                        <div class="mt-2.5 flex flex-wrap gap-3">
+                                                            <div class="flex items-center gap-1.5">
+                                                                <span class="text-[10px] font-bold text-slate-400 uppercase">Devolvido:</span>
+                                                                <input 
+                                                                    type="date" 
+                                                                    x-model="v.devolucao"
+                                                                    @change="saveProjects(); showSuccessToast('Data de Devolução atualizada!')"
+                                                                    class="bg-slate-50 border border-slate-100 hover:bg-white focus:bg-white text-[11px] font-medium p-1 rounded-md outline-none"
+                                                                >
+                                                            </div>
+                                                            <div class="flex items-center gap-1.5">
+                                                                <span class="text-[10px] font-bold text-slate-400 uppercase">Previsão Retorno:</span>
+                                                                <input 
+                                                                    type="date" 
+                                                                    x-model="v.previsao"
+                                                                    @change="saveProjects(); showSuccessToast('Nova previsão de retorno salva!')"
+                                                                    class="bg-slate-50 border border-slate-100 hover:bg-white focus:bg-white text-[11px] font-medium p-1 rounded-md outline-none"
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template x-if="modals.project.data.disciplinas[modals.project.selectedDiscKey].historico.length === 0">
+                                            <div class="py-8 text-center text-slate-400 border border-dashed border-slate-200 rounded-xl">
+                                                <i class="fa-solid fa-timeline text-lg mb-1 block"></i>
+                                                <span class="text-xs font-medium">Nenhuma versão registrada para esta especialidade.</span>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Rodapé Modal -->
+            <div class="border-t border-slate-100 p-4 bg-slate-50 flex justify-between">
+                <button 
+                    @click="confirmDeleteProject(modals.project.data)" 
+                    class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+                >
+                    <i class="fa-regular fa-trash-can"></i>
+                    <span>Excluir Projeto</span>
+                </button>
+                <button @click="modals.project.open = false" class="bg-[#1A1A1A] hover:bg-black text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-md">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: CADASTRAR NOVO EMPREENDIMENTO -->
+    <div 
+        x-show="modals.newProject.open" 
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        <div 
+            @click.away="modals.newProject.open = false"
+            class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+        >
+            <div class="bg-slate-900 text-white px-5 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm md:text-base"><i class="fa-solid fa-folder-plus text-indigo-400 mr-2"></i>Novo Empreendimento</h3>
+                <button @click="modals.newProject.open = false" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-5 space-y-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Código de Controle</label>
+                    <input 
+                        type="text" 
+                        x-model="modals.newProject.form.numero"
+                        @input="modals.newProject.form.numero = formatProjectCodeInput($event.target.value)"
+                        placeholder="Ex: 2026-001"
+                        maxlength="8"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs md:text-sm font-semibold outline-none focus:border-black focus:bg-white transition uppercase"
+                    >
+                    <span class="text-[10px] text-slate-400 mt-1 block">O código será formatado automaticamente como YYYY-XXX</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Nome do Empreendimento</label>
+                    <input 
+                        type="text" 
+                        x-model="modals.newProject.form.nome"
+                        placeholder="Ex: Residencial Vista Bella"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs md:text-sm font-semibold outline-none focus:border-black focus:bg-white transition"
+                    >
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Arquiteto Responsável</label>
+                    <input 
+                        type="text" 
+                        x-model="modals.newProject.form.arquiteto"
+                        list="architects-list"
+                        placeholder="Ex: Clara Mendes"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs md:text-sm font-semibold outline-none focus:border-black focus:bg-white transition"
+                    >
+                    <datalist id="architects-list">
+                        <template x-for="arch in getArchitects()" :key="arch">
+                            <option :value="arch"></option>
+                        </template>
+                    </datalist>
+                </div>
+
+                <!-- Aviso do escopo inicial -->
+                <p class="text-[10px] text-slate-400 leading-relaxed">
+                    <i class="fa-solid fa-info-circle mr-1"></i> Por padrão, todos os novos empreendimentos começam com as 5 disciplinas complementares ativas e em andamento. Você poderá desativar ou dar andamento individual após a criação.
+                </p>
+            </div>
+
+            <div class="bg-slate-50 border-t p-4 flex justify-end gap-2.5">
+                <button 
+                    @click="modals.newProject.open = false" 
+                    class="px-4 py-2 border rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100"
+                >
+                    Cancelar
+                </button>
+                <button 
+                    @click="createProject()" 
+                    class="px-5 py-2 bg-[#1A1A1A] hover:bg-black text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-100"
+                >
+                    Criar Prédio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAIXA DE ALERTA CUSTOMIZADA (Substitui o alert nativo) -->
+    <div 
+        x-show="customAlert.show" 
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl border border-slate-100 text-center">
+            <div class="bg-rose-50 text-rose-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-circle-exclamation text-xl"></i>
+            </div>
+            <h4 class="font-bold text-slate-950 text-sm md:text-base">Atenção</h4>
+            <p class="text-xs text-slate-500 mt-2" x-text="customAlert.message"></p>
+            <button 
+                @click="customAlert.show = false"
+                class="w-full bg-[#1A1A1A] hover:bg-black text-white font-bold py-2 px-4 rounded-xl text-xs mt-4 transition"
+            >
+                Entendi
+            </button>
+        </div>
+    </div>
+
+    <!-- CAIXA DE CONFIRMAÇÃO CUSTOMIZADA (Substitui o confirm nativo) -->
+    <div 
+        x-show="customConfirm.show" 
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl border border-slate-100 text-center">
+            <div class="bg-amber-50 text-amber-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h4 class="font-bold text-slate-950 text-sm">Confirmação</h4>
+            <p class="text-xs text-slate-500 mt-2" x-text="customConfirm.message"></p>
+            <div class="flex gap-2 mt-4">
+                <button 
+                    @click="customConfirm.show = false"
+                    class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-xs transition"
+                >
+                    Cancelar
+                </button>
+                <button 
+                    @click="executeCustomConfirm()"
+                    class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-xl text-xs transition shadow-md shadow-rose-100"
+                >
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (2 BOTÕES UNIFICADOS) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2.5 px-4 shadow-xl z-40">
+        <div class="max-w-xs mx-auto grid grid-cols-2 gap-2">
+            
+            <!-- Botão 1: Dashboard -->
+            <button 
+                @click="currentTab = 'dashboard'"
+                class="flex flex-col items-center justify-center gap-1 py-1 rounded-xl transition"
+                :class="currentTab === 'dashboard' ? 'text-black font-bold bg-slate-100/50' : 'text-slate-400 font-medium hover:text-slate-600'"
+            >
+                <i class="fa-solid fa-chart-pie text-lg"></i>
+                <span class="text-[10px]">Dashboard</span>
+            </button>
+
+            <!-- Botão 2: Projetos -->
+            <button 
+                @click="switchToTab('projetos')"
+                class="flex flex-col items-center justify-center gap-1 py-1 rounded-xl transition relative"
+                :class="currentTab === 'projetos' ? 'text-black font-bold bg-slate-100/50' : 'text-slate-400 font-medium hover:text-slate-600'"
+            >
+                <i class="fa-solid fa-diagram-project text-lg"></i>
+                <span class="text-[10px]">Projetos</span>
+                <template x-if="getMetrics().atrasados > 0">
+                    <span class="absolute top-1 right-12 w-2 h-2 bg-rose-500 rounded-full"></span>
+                </template>
+            </button>
+            
+        </div>
+    </nav>
+
+    <script>
+        // Configuração das Disciplinas para uso dinâmico em templates
+        const disciplinasConfig = {
+            estrutural: { nome: 'Estrutural', icon: 'fa-solid fa-cubes', bg: 'bg-blue-50', color: 'text-blue-600', border: 'border-blue-200' },
+            hidraulica: { nome: 'Hidráulica', icon: 'fa-solid fa-droplet', bg: 'bg-cyan-50', color: 'text-cyan-600', border: 'border-cyan-200' },
+            eletrica: { nome: 'Elétrica', icon: 'fa-solid fa-bolt', bg: 'bg-amber-50', color: 'text-amber-500', border: 'border-amber-200' },
+            automacao: { nome: 'Automação', icon: 'fa-solid fa-gears', bg: 'bg-purple-50', color: 'text-purple-600', border: 'border-purple-200' },
+            ar_condicionado: { nome: 'Ar Condicionado', icon: 'fa-solid fa-wind', bg: 'bg-teal-50', color: 'text-teal-600', border: 'border-teal-200' }
+        };
+
+        // Dados iniciais mockados (com códigos formatados no padrão YYYY-XXX)
+        const defaultProjects = [
+            {
+                id: '1',
+                numero: '2026-010',
+                nome: 'Edifício Horizon',
+                arquiteto: 'Clara Mendes',
+                disciplinas: {
+                    estrutural: {
+                        engenheiro: 'Roberto Silva',
+                        status: 'Em andamento',
+                        historico: [
+                            { versao: 1, recebimento: '2026-06-01', limite: '2026-06-22', devolucao: '2026-06-18', previsao: '2026-06-25' },
+                            { versao: 2, recebimento: '2026-06-26', limite: '2026-07-03', devolucao: null, previsao: null }
+                        ]
+                    },
+                    hidraulica: {
+                        engenheiro: 'Mariana Lima',
+                        status: 'Em andamento',
+                        historico: [
+                            { versao: 1, recebimento: '2026-06-10', limite: '2026-07-01', devolucao: '2026-06-29', previsao: '2026-07-08' }
+                        ]
+                    },
+                    eletrica: {
+                        engenheiro: 'Luiz Santos',
+                        status: 'Compatibilizado',
+                        historico: [
+                            { versao: 1, recebimento: '2026-05-15', limite: '2026-06-05', devolucao: '2026-06-01', previsao: null }
+                        ]
+                    },
+                    automacao: {
+                        engenheiro: '',
+                        status: 'Não se aplica',
+                        historico: []
+                    },
+                    ar_condicionado: {
+                        engenheiro: 'Ana Julia',
+                        status: 'Em andamento',
+                        historico: [
+                            { versao: 1, recebimento: '2026-07-01', limite: '2026-07-22', devolucao: null, previsao: null }
+                        ]
+                    }
+                }
+            },
+            {
+                id: '2',
+                numero: '2026-015',
+                nome: 'Residencial Bella Vista',
+                arquiteto: 'Bruno Costa',
+                disciplinas: {
+                    estrutural: {
+                        engenheiro: 'Roberto Silva',
+                        status: 'Em andamento',
+                        historico: [
+                            { versao: 1, recebimento: '2026-06-15', limite: '2026-07-06', devolucao: null, previsao: null }
+                        ]
+                    },
+                    hidraulica: {
+                        engenheiro: 'Mariana Lima',
+                        status: 'Em andamento',
+                        historico: [
+                            { versao: 1, recebimento: '2026-06-01', limite: '2026-06-22', devolucao: '2026-06-20', previsao: '2026-06-28' },
+                            { versao: 2, recebimento: '2026-06-29', limite: '2026-07-06', devolucao: '2026-07-03', previsao: '2026-07-15' }
+                        ]
+                    },
+                    eletrica: {
+                        engenheiro: 'Luiz Santos',
+                        status: 'Em andamento',
+                        historico: []
+                    },
+                    automacao: {
+                        engenheiro: 'Lucas Neves',
+                        status: 'Em andamento',
+                        historico: []
+                    },
+                    ar_condicionado: {
+                        engenheiro: 'Ana Julia',
+                        status: 'Compatibilizado',
+                        historico: [
+                            { versao: 1, recebimento: '2026-05-10', limite: '2026-05-31', devolucao: '2026-05-25', previsao: null }
+                        ]
+                    }
+                }
+            }
+        ];
+
+        // Função de Estado Central do Alpine
+        function appState() {
+            return {
+                currentTab: 'dashboard',
+                projects: [],
+                disciplinasConfig: disciplinasConfig,
+                expandedProjects: [], // IDs dos projetos atualmente expandidos na visualização linear
+                filters: {
+                    search: '',
+                    orderBy: 'codigo_desc',
+                    discipline: '',      // Filtro por disciplina gargalo da dash
+                    statusFilter: '',    // Filtro por status do panorama geral: 'naArq', 'comProj', 'atrasados'
+                    architect: ''        // Filtro por Arquiteto Responsável
+                },
+                toast: {
+                    show: false,
+                    message: '',
+                    icon: 'fa-solid fa-circle-check',
+                    color: 'text-emerald-500'
+                },
+                customAlert: {
+                    show: false,
+                    message: ''
+                },
+                customConfirm: {
+                    show: false,
+                    message: '',
+                    onConfirm: null
+                },
+                modals: {
+                    project: {
+                        open: false,
+                        data: null,
+                        selectedDiscKey: 'estrutural',
+                        newVersionForm: {
+                            open: false,
+                            versao: 1,
+                            recebimento: '',
+                            limite: '',
+                            computedDays: 0,
+                            computedDays: 0,
+                        }
+                    },
+                    newProject: {
+                        open: false,
+                        form: {
+                            numero: '',
+                            nome: '',
+                            arquiteto: ''
+                        }
+                    }
+                },
+
+                // Inicializar dados do LocalStorage ou mockados
+                init() {
+                    const saved = localStorage.getItem('gestaeng_projects_v2');
+                    if (saved) {
+                        try {
+                            this.projects = JSON.parse(saved);
+                        } catch(e) {
+                            this.projects = defaultProjects;
+                        }
+                    } else {
+                        this.projects = defaultProjects;
+                        this.saveProjects();
+                    }
+                },
+
+                saveProjects() {
+                    localStorage.setItem('gestaeng_projects_v2', JSON.stringify(this.projects));
+                },
+
+                // GESTÃO DOS DIALOGS PREMIUM CUSTOMIZADOS (SEM ALERT/CONFIRM NATIVOS)
+                showAlert(msg) {
+                    this.customAlert.message = msg;
+                    this.customAlert.show = true;
+                },
+
+                showConfirm(msg, callback) {
+                    this.customConfirm.message = msg;
+                    this.customConfirm.onConfirm = callback;
+                    this.customConfirm.show = true;
+                },
+
+                executeCustomConfirm() {
+                    if (this.customConfirm.onConfirm) {
+                        this.customConfirm.onConfirm();
+                    }
+                    this.customConfirm.show = false;
+                },
+
+                showSuccessToast(msg) {
+                    this.toast.message = msg;
+                    this.toast.icon = 'fa-solid fa-circle-check';
+                    this.toast.color = 'text-emerald-400';
+                    this.toast.show = true;
+                    setTimeout(() => this.toast.show = false, 3000);
+                },
+
+                switchToTab(tab) {
+                    this.currentTab = tab;
+                    // Ao navegar voluntariamente, limpamos filtros de métricas específicas
+                    this.filters.discipline = '';
+                    this.filters.statusFilter = '';
+                    if (tab === 'projetos') {
+                        this.filters.statusScope = 'ativos';
+                    }
+                },
+
+                // FORMATAR CÓDIGO DO PROJETO AUTOMATICAMENTE (YYYY-XXX)
+                formatProjectCodeInput(val) {
+                    // Remove tudo que não é dígito
+                    let clean = val.replace(/[^0-9]/g, '');
+                    if (clean.length > 4) {
+                        return clean.slice(0, 4) + '-' + clean.slice(4, 7);
+                    }
+                    return clean;
+                },
+
+                // ATALHOS DA DASHBOARD PARA REDIRECIONAR E FILTRAR PROJETOS
+                filterByDashboardMetric(metricType) {
+                    this.filters.statusFilter = metricType;
+                    this.filters.discipline = ''; // limpa disciplina anterior se houver
+                    this.filters.statusScope = 'todos'; // força todos para encontrar o que quer que precise
+                    this.currentTab = 'projetos';
+                },
+
+                filterByDisciplineOnTab2(discKey) {
+                    this.filters.discipline = discKey;
+                    this.filters.statusFilter = ''; // limpa status anterior
+                    this.filters.statusScope = 'ativos';
+                    this.currentTab = 'projetos';
+                },
+
+                // GESTÃO DE EXPANSÃO DE PROJETOS NA LISTA LINEAR
+                toggleProjectExpand(id) {
+                    if (this.expandedProjects.includes(id)) {
+                        this.expandedProjects = this.expandedProjects.filter(item => item !== id);
+                    } else {
+                        this.expandedProjects.push(id);
+                    }
+                },
+
+                isProjectExpanded(id) {
+                    return this.expandedProjects.includes(id);
+                },
+
+                // DIAS ÚTEIS (Automático)
+                calculateBusinessDays(startDateStr, days) {
+                    if (!startDateStr) return '';
+                    let date = new Date(startDateStr + 'T12:00:00');
+                    let addedDays = 0;
+                    while (addedDays < days) {
+                        date.setDate(date.getDate() + 1);
+                        const dayOfWeek = date.getDay();
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                            addedDays++;
+                        }
+                    }
+                    return date.toISOString().split('T')[0];
+                },
+
+                calculateBusinessDaysDifference(startDateStr, endDateStr) {
+                    let start = new Date(startDateStr + 'T12:00:00');
+                    let end = new Date(endDateStr + 'T12:00:00');
+                    if (start > end) return 0;
+                    
+                    let days = 0;
+                    let current = new Date(start);
+                    while (current < end) {
+                        current.setDate(current.getDate() + 1);
+                        const dayOfWeek = current.getDay();
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                            days++;
+                        }
+                    }
+                    return days;
+                },
+
+                getLastVersion(disc) {
+                    if (!disc.historico || disc.historico.length === 0) return null;
+                    return disc.historico[disc.historico.length - 1];
+                },
+
+                getLastVersionNumber(disc) {
+                    const last = this.getLastVersion(disc);
+                    return last ? last.versao : 0;
+                },
+
+                // EXTRAIR LISTA DE ARQUITETOS ÚNICOS DINAMICAMENTE
+                getArchitects() {
+                    const archs = this.projects.map(p => p.arquiteto).filter(Boolean);
+                    return [...new Set(archs)].sort();
+                },
+
+                // BOLA DA VEZ STATUS
+                getDisciplineStatusBadge(disc) {
+                    if (disc.status === 'Não se aplica') {
+                        return { label: 'Inativo', bg: 'bg-slate-200', text: 'text-slate-500' };
+                    }
+                    if (disc.status === 'Compatibilizado') {
+                        return { label: 'Aprovado', bg: 'bg-emerald-500', text: 'text-emerald-600' };
+                    }
+                    
+                    const last = this.getLastVersion(disc);
+                    if (!last) {
+                        return { label: 'Sem Versão', bg: 'bg-slate-300', text: 'text-slate-500' };
+                    }
+
+                    const today = new Date().toISOString().split('T')[0];
+
+                    if (last.recebimento && !last.devolucao) {
+                        if (today > last.limite) {
+                            return { label: 'Atrasado Arq', bg: 'bg-rose-500', text: 'text-rose-600' };
+                        }
+                        return { label: 'Na Arquitetura', bg: 'bg-slate-1000', text: 'text-black' };
+                    }
+
+                    if (last.devolucao) { 
+                        if (last.previsao && today > last.previsao) {
+                            return { label: 'Atrasado Eng', bg: 'bg-rose-500', text: 'text-rose-600' };
+                        }
+                        return { label: 'No Projetista', bg: 'bg-amber-500', text: 'text-amber-600' };
+                    }
+
+                    return { label: 'Em Análise', bg: 'bg-blue-500', text: 'text-blue-600' };
+                },
+
+                // Estilo dos botões/círculos de disciplinas no card linear (Ícones maiores)
+                getDisciplineIconStyles(disc, discKey) {
+                    if (disc.status === 'Não se aplica') {
+                        return 'bg-slate-50 text-slate-300 border-slate-100 opacity-30';
+                    }
+                    if (disc.status === 'Compatibilizado') {
+                        return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+                    }
+                    const badge = this.getDisciplineStatusBadge(disc);
+                    if (badge.label && badge.label.includes('Atrasado')) {
+                        return 'bg-rose-500 text-white border-rose-600 font-bold animate-pulse';
+                    }
+                    if (badge.label === 'Na Arquitetura' || badge.label === 'Conosco') {
+                        return 'bg-[#1A1A1A] text-white border-black font-bold';
+                    }
+                    if (badge.label === 'No Projetista') {
+                        return 'bg-amber-400 text-amber-950 border-amber-500 font-bold';
+                    }
+                    return 'bg-slate-100 text-slate-700 border-slate-200';
+                },
+
+                getDisciplineCardBorder(disc) {
+                    const badge = this.getDisciplineStatusBadge(disc);
+                    if (badge.label.includes('Atrasado')) return 'border-rose-300 ring-1 ring-rose-50';
+                    if (badge.label === 'Na Arquitetura') return 'border-indigo-300 ring-1 ring-indigo-50 bg-slate-100/10';
+                    if (badge.label === 'No Projetista') return 'border-amber-200';
+                    if (badge.label === 'Aprovado') return 'border-emerald-200 bg-emerald-50/5';
+                    return 'border-slate-200';
+                },
+
+                getFooterDateLabel(disc) {
+                    if (disc.status !== 'Em andamento') return { title: '', date: '' };
+                    const last = this.getLastVersion(disc);
+                    if (!last) return { title: 'Sem histórico', date: '' };
+
+                    if (last.recebimento && !last.devolucao) {
+                        return { title: 'Prazo até:', date: this.formatDate(last.limite) };
+                    }
+                    if (last.devolucao) {
+                        return { title: 'Previsão Retorno:', date: this.formatDate(last.previsao) || 'Sem data' };
+                    }
+                    return { title: '', date: '' };
+                },
+
+                formatDate(dateStr) {
+                    if (!dateStr) return '';
+                    const [year, month, day] = dateStr.split('-');
+                    return `${day}/${month}/${year}`;
+                },
+
+                // FILTRAGEM E ORDENAÇÃO DE PROJETOS
+                getFilteredProjects() {
+                    let list = this.projects;
+
+                    // Filtro inteligente de Escopo de Status (Ativos vs Todos)
+                    if (this.filters.statusScope === 'ativos') {
+                        list = list.filter(p => {
+                            return Object.values(p.disciplinas).some(d => d.status === 'Em andamento');
+                        });
+                    }
+
+                    // Filtro de Arquiteto Responsável
+                    if (this.filters.architect) {
+                        list = list.filter(p => p.arquiteto === this.filters.architect);
+                    }
+
+                    // Filtro dinâmico por status selecionado do Panorama Geral (Dashboard)
+                    if (this.filters.statusFilter) {
+                        list = list.filter(p => {
+                            return Object.values(p.disciplinas).some(d => {
+                                if (d.status !== 'Em andamento') return false;
+                                const last = this.getLastVersion(d);
+                                const today = new Date().toISOString().split('T')[0];
+
+                                if (this.filters.statusFilter === 'naArq') {
+                                    return last && last.recebimento && !last.devolucao;
+                                }
+                                if (this.filters.statusFilter === 'comProj') {
+                                    return last && last.devolucao && !last.recebimentoNovo;
+                                }
+                                if (this.filters.statusFilter === 'atrasados') {
+                                    if (!last) return false;
+                                    if (last.recebimento && !last.devolucao && today > last.limite) return true;
+                                    if (last.devolucao && last.previsao && today > last.previsao) return true;
+                                    return false;
+                                }
+                                return true;
+                            });
+                        });
+                    }
+
+                    // Filtro de Disciplina específica (Gargalo da Dashboard)
+                    if (this.filters.discipline) {
+                        list = list.filter(p => {
+                            const d = p.disciplinas[this.filters.discipline];
+                            const last = this.getLastVersion(d);
+                            return d.status === 'Em andamento' && last && last.recebimento && !last.devolucao;
+                        });
+                    }
+
+                    // Campo de Busca geral
+                    if (this.filters.search.trim() !== '') {
+                        const s = this.filters.search.toLowerCase();
+                        list = list.filter(p => 
+                            p.nome.toLowerCase().includes(s) || 
+                            p.numero.toLowerCase().includes(s) || 
+                            p.arquiteto.toLowerCase().includes(s)
+                        );
+                    }
+
+                    // Lógica de Ordenação
+                    return list.sort((a, b) => {
+                        if (this.filters.orderBy === 'codigo_desc') {
+                            return b.numero.localeCompare(a.numero);
+                        }
+                        if (this.filters.orderBy === 'nome') {
+                            return a.nome.localeCompare(b.nome);
+                        }
+                        if (this.filters.orderBy === 'codigo') {
+                            return a.numero.localeCompare(b.numero);
+                        }
+                        if (this.filters.orderBy === 'arquiteto') {
+                            return a.arquiteto.localeCompare(b.arquiteto);
+                        }
+                        if (this.filters.orderBy === 'urgencia') {
+                            const getMinDate = (proj) => {
+                                let min = '9999-12-31';
+                                Object.values(proj.disciplinas).forEach(d => {
+                                    const last = this.getLastVersion(d);
+                                    if (d.status === 'Em andamento' && last && last.recebimento && !last.devolucao && last.limite) {
+                                        if (last.limite < min) min = last.limite;
+                                    }
+                                });
+                                return min;
+                            };
+                            return getMinDate(a).localeCompare(getMinDate(b));
+                        }
+                        return 0;
+                    });
+                },
+
+                // METRICAS DA DASHBOARD (Panorama Geral)
+                getMetrics() {
+                    let ativos = 0;
+                    let naArq = 0;
+                    let comProj = 0;
+                    let atrasados = 0;
+                    const today = new Date().toISOString().split('T')[0];
+
+                    this.projects.forEach(p => {
+                        let isProjectActive = false;
+                        Object.values(p.disciplinas).forEach(d => {
+                            if (d.status === 'Em andamento') {
+                                isProjectActive = true;
+                                const last = this.getLastVersion(d);
+                                if (last) {
+                                    if (last.recebimento && !last.devolucao) {
+                                        naArq++;
+                                        if (today > last.limite) atrasados++;
+                                    } else if (last.devolucao) {
+                                        comProj++;
+                                        if (last.previsao && today > last.previsao) atrasados++;
+                                    }
+                                }
+                            }
+                        });
+                        if (isProjectActive) ativos++;
+                    });
+
+                    return { ativos, naArq, comProj, atrasados };
+                },
+
+                getPendingCountByDiscipline(discKey) {
+                    let count = 0;
+                    this.projects.forEach(p => {
+                        const d = p.disciplinas[discKey];
+                        if (d && d.status === 'Em andamento') {
+                            const last = this.getLastVersion(d);
+                            if (last && last.recebimento && !last.devolucao) {
+                                count++;
+                            }
+                        }
+                    });
+                    return count;
+                },
+
+                getCriticalDelays() {
+                    const critical = [];
+                    const today = new Date().toISOString().split('T')[0];
+
+                    this.projects.forEach(p => {
+                        Object.entries(p.disciplinas).forEach(([discKey, d]) => {
+                            if (d.status === 'Em andamento') {
+                                const last = this.getLastVersion(d);
+                                if (last && last.recebimento && !last.devolucao && today > last.limite) {
+                                    const diff = this.calculateBusinessDaysDifference(last.limite, today);
+                                    critical.push({
+                                        projectId: p.id,
+                                        projectName: p.nome,
+                                        arquiteto: p.arquiteto,
+                                        discKey: discKey,
+                                        limite: last.limite,
+                                        daysDelayed: diff
+                                    });
+                                }
+                            }
+                        });
+                    });
+
+                    return critical.sort((a, b) => b.daysDelayed - a.daysDelayed);
+                },
+
+                // GESTÃO DE MODALS E CADASTROS
+                openNewProjectModal() {
+                    this.modals.newProject.form = { numero: '', nome: '', arquiteto: '' };
+                    this.modals.newProject.open = true;
+                },
+
+                createProject() {
+                    const f = this.modals.newProject.form;
+                    if (!f.numero || !f.nome || !f.arquiteto) {
+                        this.showAlert('Por favor, preencha todos os campos do projeto.');
+                        return;
+                    }
+
+                    // Validação de formato de código (YYYY-XXX)
+                    const formatRegex = /^\d{4}-\d{3}$/;
+                    if (!formatRegex.test(f.numero)) {
+                        this.showAlert('O código do projeto precisa seguir o formato YYYY-XXX (ex: 2026-001).');
+                        return;
+                    }
+
+                    const newProj = {
+                        id: Date.now().toString(),
+                        numero: f.numero,
+                        nome: f.nome,
+                        arquiteto: f.arquiteto,
+                        disciplinas: {
+                            estrutural: { engenheiro: '', status: 'Em andamento', arqEnviado: false, reuniaoApresentacao: false, historico: [] },
+                            hidraulica: { engenheiro: '', status: 'Em andamento', arqEnviado: false, reuniaoApresentacao: false, historico: [] },
+                            eletrica: { engenheiro: '', status: 'Em andamento', arqEnviado: false, reuniaoApresentacao: false, historico: [] },
+                            automacao: { engenheiro: '', status: 'Em andamento', arqEnviado: false, reuniaoApresentacao: false, historico: [] },
+                            ar_condicionado: { engenheiro: '', status: 'Em andamento', arqEnviado: false, reuniaoApresentacao: false, historico: [] }
+                        }
+                    };
+
+                    this.projects.push(newProj);
+                    this.saveProjects();
+                    this.modals.newProject.open = false;
+                    this.showSuccessToast('Empreendimento cadastrado com sucesso!');
+                    this.switchToTab('projetos');
+                },
+
+                confirmDeleteProject(project) {
+                    this.showConfirm(
+                        `Tem certeza de que deseja excluir o empreendimento "${project.nome}" e todo o histórico?`,
+                        () => {
+                            this.projects = this.projects.filter(p => p.id !== project.id);
+                            this.saveProjects();
+                            this.modals.project.open = false;
+                            this.showSuccessToast('Empreendimento removido permanentemente.');
+                        }
+                    );
+                },
+
+                openProjectModal(proj) {
+                    this.modals.project.data = proj;
+                    this.modals.project.selectedDiscKey = 'estrutural';
+                    this.modals.project.newVersionForm.open = false;
+                    this.modals.project.open = true;
+                },
+
+                openDisciplineModal(proj, discKey) {
+                    this.modals.project.data = proj;
+                    this.modals.project.selectedDiscKey = discKey;
+                    this.modals.project.newVersionForm.open = false;
+                    this.modals.project.open = true;
+                },
+
+                selectDisciplineInProject(discKey) {
+                    this.modals.project.selectedDiscKey = discKey;
+                    this.modals.project.newVersionForm.open = false;
+                },
+
+                handleDisciplineStatusChange(discKey) {
+                    const disc = this.modals.project.data.disciplinas[discKey];
+                    this.saveProjects();
+                    this.showSuccessToast(`Status de ${disciplinasConfig[discKey].nome} atualizado para: ${disc.status}`);
+                },
+
+                // GESTÃO DAS VERSÕES
+                initNewVersionForm() {
+                    const disc = this.modals.project.data.disciplinas[this.modals.project.selectedDiscKey];
+                    const nextVersion = disc.historico.length + 1;
+                    
+                    this.modals.project.newVersionForm = {
+                        open: true,
+                        versao: nextVersion,
+                        recebimento: new Date().toISOString().split('T')[0],
+                        limite: ''
+                    };
+                    this.calculateDeadline();
+                },
+
+                calculateDeadline() {
+                    const form = this.modals.project.newVersionForm;
+                    const days = form.versao === 1 ? 15 : 5;
+                    form.limite = this.calculateBusinessDays(form.recebimento, days);
+                    form.computedDays = days;
+                },
+                recalculateCustomDays() {
+                    const form = this.modals.project.newVersionForm;
+                    if (form.recebimento && form.limite) {
+                        form.computedDays = this.calculateBusinessDaysDifference(form.recebimento, form.limite);
+                    }
+                },
+
+                saveNewVersion() {
+                    const form = this.modals.project.newVersionForm;
+                    if (!form.recebimento) {
+                        this.showAlert('Selecione uma data de recebimento válida.');
+                        return;
+                    }
+
+                    const disc = this.modals.project.data.disciplinas[this.modals.project.selectedDiscKey];
+                    
+                    const newHist = {
+                        versao: form.versao,
+                        recebimento: form.recebimento,
+                        limite: form.limite,
+                        devolucao: null,
+                        previsao: null
+                    };
+
+                    disc.historico.push(newHist);
+                    this.saveProjects();
+                    this.modals.project.newVersionForm.open = false;
+                    this.showSuccessToast(`Entrada da Versão V${form.versao} registrada!`);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
