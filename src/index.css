@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Josefin Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Josefin Sans", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom styles for high-contrast B&W theme */
+body {
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.rounded-gemini {
+  border-radius: 1.5rem;
+}
+
+.rounded-gemini-xl {
+  border-radius: 2rem;
+}
+
+/* Custom scrollbars to be sleek, B&W */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 3px;
+}
