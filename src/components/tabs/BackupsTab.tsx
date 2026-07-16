@@ -192,7 +192,7 @@ export default function BackupsTab({
                       <select
                         value={rec.fase}
                         onChange={e => handleUpdateRecord(rec.id, { fase: e.target.value })}
-                        className="bg-transparent border-none p-1 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full focus:outline-none"
+                        className="bg-transparent border-none p-1 pr-6 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full focus:outline-none"
                       >
                         <option value="01_Levantamentos">01_Levantamentos</option>
                         <option value="02_Estudo Prévio">02_Estudo Prévio</option>
@@ -209,7 +209,7 @@ export default function BackupsTab({
                       <select
                         value={rec.progress}
                         onChange={e => handleUpdateRecord(rec.id, { progress: e.target.value })}
-                        className="bg-transparent border-none p-1 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full focus:outline-none"
+                        className="bg-transparent border-none p-1 pr-6 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full focus:outline-none"
                       >
                         <option value="Em Desenvolvimento">Em Desenvolvimento</option>
                         <option value="Não Iniciado">Não Iniciado</option>
@@ -228,7 +228,7 @@ export default function BackupsTab({
                           handleUpdateRecord(rec.id, { status: val });
                           triggerToast(`Backup de ${rec.project} marcado como ${val}!`, 'info');
                         }}
-                        className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-semibold w-full text-center focus:outline-none ${
+                        className={`p-1 pl-2 pr-6 rounded text-[10px] border focus:ring-0 cursor-pointer font-semibold w-full text-left focus:outline-none ${
                           rec.status === 'Realizado' 
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                             : 'bg-rose-50 text-rose-700 border-rose-200'
@@ -244,7 +244,7 @@ export default function BackupsTab({
                       <select
                         value={rec.tecnico}
                         onChange={e => handleUpdateRecord(rec.id, { tecnico: e.target.value })}
-                        className="bg-transparent border-none p-1 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full uppercase focus:outline-none"
+                        className="bg-transparent border-none p-1 pr-6 text-slate-700 font-semibold focus:bg-slate-50 focus:ring-0 text-[11px] rounded cursor-pointer w-full uppercase focus:outline-none"
                       >
                         <option value="ANA">ANA</option>
                         <option value="ÉRIKA">ÉRIKA</option>

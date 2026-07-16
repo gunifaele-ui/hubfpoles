@@ -23,7 +23,6 @@ import { GeminiAssistant } from './components/GeminiAssistant';
 // Tab Submodules
 import DashboardTab from './components/tabs/DashboardTab';
 import PartnersTab from './components/tabs/PartnersTab';
-import ExecutiveTab from './components/tabs/ExecutiveTab';
 import CronogramaTab from './components/tabs/CronogramaTab';
 import ResponsaveisTab from './components/tabs/ResponsaveisTab';
 import ProjetosTab from './components/tabs/ProjetosTab';
@@ -35,6 +34,21 @@ import LogisticaTab from './components/tabs/LogisticaTab';
 
 // Logo
 import fpolesLogo from './assets/fpoles_logo.png';
+
+const FpolesAIIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className}
+  >
+    {/* Left Bar */}
+    <rect x="2" y="12" width="11" height="2" />
+    {/* Middle Bar (Raised) */}
+    <rect x="13" y="9" width="6" height="2" />
+    {/* Right Bar */}
+    <rect x="19" y="12" width="3" height="2" />
+  </svg>
+);
 
 function formatWeekLabel(startDateStr: string, endDateStr: string): string {
   const startParts = startDateStr.split('-');
@@ -150,7 +164,16 @@ export default function App() {
   // States with LocalStorage loading
   const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem('fpoles_tasks');
-    return saved ? JSON.parse(saved) : INITIAL_TASKS;
+    const loaded = saved ? JSON.parse(saved) : INITIAL_TASKS;
+    
+    // Auto-seed missing INITIAL_TASKS so user gets new simulated tasks without clearing localStorage
+    const merged = [...loaded];
+    INITIAL_TASKS.forEach(initTask => {
+      if (!merged.some(t => t.id === initTask.id)) {
+        merged.push(initTask);
+      }
+    });
+    return merged;
   });
 
   const [projects, setProjects] = useState<Project[]>(() => {
@@ -299,11 +322,14 @@ export default function App() {
     localStorage.setItem('fpoles_user_role', userRole);
   }, [userRole]);
 
-  // Handle automatic redirect if Estagiário ends up on restricted tabs
+  // Handle automatic redirect if user ends up on restricted tabs
   useEffect(() => {
-    if (userRole === 'estagiario' && (activeTab === 'senhas' || activeTab === 'licencas' || activeTab === 'backups' || activeTab === 'executive')) {
+    if (userRole === 'estagiario' && (activeTab === 'senhas' || activeTab === 'licencas' || activeTab === 'backups')) {
       setActiveTab('dashboard');
       triggerToast('Acesso restrito para Estagiários. Redirecionado ao Dashboard.', 'warning');
+    } else if (userRole !== 'admin' && activeTab === 'licencas') {
+      setActiveTab('dashboard');
+      triggerToast('Acesso restrito para Administradores. Redirecionado ao Dashboard.', 'warning');
     }
   }, [userRole, activeTab]);
 
@@ -545,21 +571,19 @@ export default function App() {
     setRevealedPassIds(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // --- NAVIGATION LIST (NO NUMBERS, SPECIFIC ORDER) ---
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    ...(userRole !== 'estagiario' ? [{ id: 'executive', label: 'Painel Executivo', icon: BarChart3 }] : []),
     { id: 'cronograma', label: 'Cronograma', icon: Calendar },
     { id: 'responsaveis', label: 'Responsáveis por Projeto', icon: Users },
     { id: 'complementares', label: 'Projetos Complementares', icon: FileCode },
-    { id: 'client_area', label: 'Área do Cliente', icon: User, comingSoon: true },
     { id: 'partners', label: 'Fornecedores e Parceiros', icon: Handshake },
     { id: 'backups', label: 'Backup Semanal', icon: Database, restricted: true },
-    { id: 'licencas', label: 'Controle de Licenças', icon: ShieldCheck, restricted: true },
     { id: 'senhas', label: 'Senhas', icon: Lock, restricted: true },
     { id: 'bim', label: 'Gestão BIM', icon: Box },
     { id: 'logistica', label: 'Tablets e Placas', icon: Truck },
-    ...(userRole === 'admin' ? [{ id: 'projetos', label: 'Projetos (ADM)', icon: Briefcase }] : [])
+    { id: 'licencas', label: 'Controle de Licenças', icon: ShieldCheck, adminOnly: true },
+    ...(userRole === 'admin' ? [{ id: 'projetos', label: 'Projetos (ADM)', icon: Briefcase }] : []),
+    { id: 'client_area', label: 'Área do Cliente', icon: User, comingSoon: true }
   ];
 
   return (
@@ -590,7 +614,7 @@ export default function App() {
             }`}
           >
         {/* Brand */}
-        <div className="p-6 flex flex-col gap-2 border-b border-white/5">
+        <div className="p-6 flex flex-col gap-2 border-b border-white/5 shrink-0">
           <div className="flex items-center justify-between gap-2">
             {!sidebarCollapsed ? (
               <div className="flex flex-col gap-2 w-full">
@@ -621,18 +645,24 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setAdminPasswordInput('');
-                  setPasswordError(false);
-                  setRoleModalOpen(true);
-                }}
-                className="w-10 h-10 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors flex items-center justify-center cursor-pointer mx-auto"
-                title="Controle de Acessos"
-              >
-                <Settings className="w-4 h-4" />
-              </button>
+              <div className="flex flex-col items-center gap-4 w-full">
+                {/* Logo IA Fpoles */}
+                <FpolesAIIcon className="w-6 h-6 text-white" />
+                
+                {/* Settings Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminPasswordInput('');
+                    setPasswordError(false);
+                    setRoleModalOpen(true);
+                  }}
+                  className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-center cursor-pointer"
+                  title="Controle de Acessos"
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -641,7 +671,7 @@ export default function App() {
         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {navItems.map(item => {
             const Icon = item.icon;
-            const isLocked = userRole === 'estagiario' && item.restricted;
+            const isLocked = (userRole === 'estagiario' && item.restricted) || (userRole !== 'admin' && item.adminOnly);
             const isActive = activeTab === item.id;
             const isComingSoon = item.comingSoon;
             return (
@@ -652,13 +682,16 @@ export default function App() {
                   if (isComingSoon) {
                     triggerToast(`Módulo "${item.label}" estará disponível em breve!`, 'info');
                   } else if (isLocked) {
-                    triggerToast(`Acesso restrito: O módulo "${item.label}" não está disponível para Estagiários.`, 'warning');
+                    const msg = item.adminOnly 
+                      ? 'Acesso restrito: Apenas Administradores podem acessar.' 
+                      : 'Acesso restrito: Não disponível para Estagiários.';
+                    triggerToast(msg, 'warning');
                   } else {
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }
                 }}
-                className={`w-full flex items-center justify-between px-4 py-3 transition-all text-xs font-semibold rounded-xl ${
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2 py-3' : 'justify-between px-4 py-3'} transition-all text-xs font-semibold rounded-xl ${
                   isComingSoon
                     ? 'text-slate-500 hover:text-slate-400 cursor-not-allowed opacity-60'
                     : isLocked 
@@ -667,9 +700,9 @@ export default function App() {
                         ? 'bg-white text-slate-950 shadow-md' 
                         : 'text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer'
                 }`}
-                title={isComingSoon ? 'Em breve' : isLocked ? `Acesso restrito a Administradores/Arquitetos` : item.label}
+                title={isComingSoon ? 'Em breve' : isLocked ? (item.adminOnly ? 'Restrito a Administradores' : 'Restrito a Administradores/Arquitetos') : item.label}
               >
-                <div className="flex items-center gap-4 min-w-0">
+                <div className={`flex items-center min-w-0 ${sidebarCollapsed ? 'justify-center w-full' : 'gap-4'}`}>
                   <Icon className={`w-4 h-4 shrink-0 ${isComingSoon || isLocked ? 'opacity-50' : ''}`} />
                   {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
@@ -686,6 +719,25 @@ export default function App() {
             );
           })}
         </nav>
+
+        {/* Toggle Collapse Button at the Bottom */}
+        <div className="p-4 border-t border-white/5 shrink-0 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+            title={sidebarCollapsed ? "Expandir Menu" : "Recolher Menu"}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight className="w-4 h-4" />
+            ) : (
+              <>
+                <ChevronLeft className="w-4 h-4" />
+                <span>Recolher Menu</span>
+              </>
+            )}
+          </button>
+        </div>
       </aside>
 
       {/* --- DESKTOP AND MOBILE CONTENT COLUMN WRAPPER --- */}
@@ -727,7 +779,7 @@ export default function App() {
           <div className="md:hidden bg-black border-b border-white/5 px-4 py-4 space-y-1">
             {navItems.map(item => {
               const Icon = item.icon;
-              const isLocked = userRole === 'estagiario' && item.restricted;
+              const isLocked = (userRole === 'estagiario' && item.restricted) || (userRole !== 'admin' && item.adminOnly);
               const isActive = activeTab === item.id;
               const isComingSoon = item.comingSoon;
               return (
@@ -737,7 +789,10 @@ export default function App() {
                     if (isComingSoon) {
                       triggerToast(`Módulo "${item.label}" estará disponível em breve!`, 'info');
                     } else if (isLocked) {
-                      triggerToast(`Acesso restrito: O módulo "${item.label}" não está disponível para Estagiários.`, 'warning');
+                      const msg = item.adminOnly 
+                        ? 'Acesso restrito: Apenas Administradores podem acessar.' 
+                        : 'Acesso restrito: Não disponível para Estagiários.';
+                      triggerToast(msg, 'warning');
                     } else {
                       setActiveTab(item.id);
                       setMobileMenuOpen(false);
@@ -999,7 +1054,15 @@ export default function App() {
       )}
 
       {/* Gemini Assistant Panel Overlay */}
-      <GeminiAssistant />
+      <GeminiAssistant 
+        tasks={tasks}
+        projects={projects}
+        complementares={complementares}
+        clashes={clashes}
+        licenses={licenses}
+        backupRecords={backupRecords}
+        revitRequirements={revitRequirements}
+      />
 
       {/* --- PREMIUM TRANSITIONAL LOGIN OVERLAY --- */}
       {!isAuthenticated && (
@@ -1182,6 +1245,11 @@ function WorkspaceContent(props: WorkspaceContentProps) {
           complementares={props.complementares}
           licenses={props.licenses}
           projects={props.projects}
+          tasks={props.tasks}
+          weeks={props.weeks}
+          weekHojeId={props.weekHojeId}
+          complementaresProjects={props.complementaresProjects}
+          backupRecords={props.backupRecords}
         />
       );
     case 'cronograma':
@@ -1224,19 +1292,6 @@ function WorkspaceContent(props: WorkspaceContentProps) {
           projects={props.projects}
           setProjects={props.setProjects}
           triggerToast={props.triggerToast}
-        />
-      );
-    case 'executive':
-      return (
-        <ExecutiveTab
-          userRole={props.userRole}
-          tasks={props.tasks}
-          projects={props.projects}
-          complementaresProjects={props.complementaresProjects}
-          clashes={props.clashes}
-          licenses={props.licenses}
-          weekHojeId={props.weekHojeId}
-          weeks={props.weeks}
         />
       );
     case 'complementares':

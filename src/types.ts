@@ -75,6 +75,14 @@ export interface PrefeituraCredential {
   type?: 'prefeitura' | 'email';
 }
 
+export interface SoftwareLicenseDetails {
+  status: string;
+  login: string;
+  key: string;
+  senha?: string;
+  data?: string;
+}
+
 export interface SoftwareLicense {
   id: string;
   usuario: string;
@@ -88,6 +96,9 @@ export interface SoftwareLicense {
   revitId: string;
   revitSenha?: string;
   revitData?: string;
+  softwaresData?: {
+    [softwareName: string]: SoftwareLicenseDetails;
+  };
 }
 
 export interface Toast {

@@ -28,6 +28,7 @@ var import_dotenv = __toESM(require("dotenv"), 1);
 var import_vite = require("vite");
 var import_genai = require("@google/genai");
 import_dotenv.default.config();
+import_dotenv.default.config({ path: import_path.default.resolve(process.cwd(), ".env.local") });
 async function startServer() {
   const app = (0, import_express.default)();
   const PORT = 3e3;

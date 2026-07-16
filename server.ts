@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 
 // Load environment variables
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
 async function startServer() {
   const app = express();

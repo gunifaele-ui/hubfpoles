@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Search, Plus, Star, Briefcase, Mail, Phone, Save, 
-  Trash2, Handshake, ShieldAlert, Award, FileText, ChevronRight 
+  Trash2, Handshake, Award, FileText, Lock, X, Heart
 } from 'lucide-react';
 import { Partner, PartnerProject } from '../../types';
 
@@ -10,7 +10,7 @@ const INITIAL_PARTNERS: Partner[] = [
   {
     id: 'p-1',
     name: 'Calculus Engenharia Estrutural',
-    type: 'Projetista Complementar',
+    type: 'Estrutural',
     recommendationLevel: 'Altamente Recomendado',
     recommendationScore: 4.9,
     projectsCount: 18,
@@ -24,9 +24,24 @@ const INITIAL_PARTNERS: Partner[] = [
     ]
   },
   {
+    id: 'p-1b',
+    name: 'AlfaCálculo Fundações e Solo',
+    type: 'Estrutural',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.5,
+    projectsCount: 14,
+    notes: 'Especialistas em solo e fundações profundas complexas. Ótimas sondagens e relatórios técnicos precisos.',
+    contactEmail: 'projetos@alfacalculo.eng.br',
+    contactPhone: '(11) 95544-3322',
+    projectsHistory: [
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Estudos Geotécnicos e Contenções', status: 'Em andamento' },
+      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Projeto de Fundações por Estacas', status: 'Concluído' }
+    ]
+  },
+  {
     id: 'p-2',
     name: 'HidraSan Saneamento e Hidráulica',
-    type: 'Projetista Complementar',
+    type: 'Hidráulica',
     recommendationLevel: 'Recomendado',
     recommendationScore: 4.2,
     projectsCount: 12,
@@ -39,13 +54,27 @@ const INITIAL_PARTNERS: Partner[] = [
     ]
   },
   {
+    id: 'p-2b',
+    name: 'PluviaTech Hidrossanitária',
+    type: 'Hidráulica',
+    recommendationLevel: 'Altamente Recomendado',
+    recommendationScore: 4.6,
+    projectsCount: 9,
+    notes: 'Projetos hidráulicos de alto padrão com detalhamento preciso de prumadas e shafts de manutenção. Excelente suporte.',
+    contactEmail: 'eng@pluviatech.com.br',
+    contactPhone: '(11) 94455-6677',
+    projectsHistory: [
+      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Projetos Hidráulicos e de Reuso de Água', status: 'Concluído' }
+    ]
+  },
+  {
     id: 'p-3',
-    name: 'DecoGlow Luminotécnica e Interiores',
-    type: 'Parceiro',
+    name: 'DecoGlow Luminotécnica',
+    type: 'Iluminação',
     recommendationLevel: 'Altamente Recomendado',
     recommendationScore: 4.8,
     projectsCount: 8,
-    notes: 'Projetos de iluminação muito detalhados e de altíssimo padrão. Sempre especificam fornecedores com bom custo-benefício e design moderno.',
+    notes: 'Projetos de iluminação muito detalhados e de altíssimo padrão. Sempre especificam fornecedores com bom custo-benefício.',
     contactEmail: 'sofia@decoglow.design',
     contactPhone: '(11) 99887-7665',
     projectsHistory: [
@@ -54,32 +83,158 @@ const INITIAL_PARTNERS: Partner[] = [
     ]
   },
   {
+    id: 'p-3b',
+    name: 'LuminaPro Projetos de Iluminação',
+    type: 'Iluminação',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.6,
+    projectsCount: 12,
+    notes: 'Foco em iluminação comercial e corporativa. Excelentes simulações no Dialux e especificações de luminárias LED homologadas.',
+    contactEmail: 'contato@luminapro.com.br',
+    contactPhone: '(11) 93322-1100',
+    projectsHistory: [
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Luminotécnico das Áreas Comuns', status: 'Em andamento' }
+    ]
+  },
+  {
     id: 'p-4',
     name: 'Marmoraria Granitex',
-    type: 'Fornecedor',
+    type: 'Esquadrias',
     recommendationLevel: 'Regular',
     recommendationScore: 3.5,
     projectsCount: 5,
-    notes: 'A qualidade do acabamento é excepcional, porém costumam atrasar a entrega das peças na obra em até 10 dias úteis.',
+    notes: 'A qualidade do acabamento é excepcional, porém costumam atrasar a entrega das peças na obra.',
     contactEmail: 'vendas@marmorariagranitex.com.br',
     contactPhone: '(11) 4004-1234',
     projectsHistory: [
-      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Fornecimento de Mármores e Granitos das Áreas Comuns', status: 'Em andamento' },
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Fornecimento de Mármores das Áreas Comuns', status: 'Em andamento' },
       { projectName: 'Residência Ruas (2023-020)', year: 2025, role: 'Fornecimento de Bancadas e Pias', status: 'Concluído' }
     ]
   },
   {
+    id: 'p-4b',
+    name: 'Alumiglass Esquadrias de Alumínio',
+    type: 'Esquadrias',
+    recommendationLevel: 'Altamente Recomendado',
+    recommendationScore: 4.8,
+    projectsCount: 15,
+    notes: 'Líder em esquadrias de alto padrão na linha Gold e Chroma. Atenuação acústica excelente e montagem impecável.',
+    contactEmail: 'orcamentos@alumiglass.com.br',
+    contactPhone: '(11) 92211-0099',
+    projectsHistory: [
+      { projectName: 'Residência Moron (2025-020)', year: 2025, role: 'Fornecimento de Caixilhos e Vidros de Segurança', status: 'Concluído' }
+    ]
+  },
+  {
     id: 'p-5',
-    name: 'AçoForte Estruturas Metálicas',
-    type: 'Fornecedor',
+    name: 'Atlas Elevadores',
+    type: 'Elevadores',
     recommendationLevel: 'Altamente Recomendado',
     recommendationScore: 4.7,
-    projectsCount: 6,
-    notes: 'Ótimo custo-benefício para estruturas pesadas de galpões e coberturas metálicas residenciais. Montagem rápida e segura em obra.',
-    contactEmail: 'projetos@acoforte.com.br',
-    contactPhone: '(11) 4567-8901',
+    projectsCount: 4,
+    notes: 'Elevada conformidade técnica. Suporte de engenharia excelente durante o projeto de caixa de corrida e poço.',
+    contactEmail: 'suporte@atlaselevadores.com.br',
+    contactPhone: '(11) 3003-4567',
     projectsHistory: [
-      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Fabricação e Montagem de Cobertura Metálica', status: 'Concluído' }
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Fornecimento de Elevadores e Cabines', status: 'Em andamento' }
+    ]
+  },
+  {
+    id: 'p-5b',
+    name: 'OtisForte Sistemas de Elevadores',
+    type: 'Elevadores',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.5,
+    projectsCount: 6,
+    notes: 'Bom custo-benefício para elevadores residenciais de menor porte. Contratos de manutenção preventiva justos.',
+    contactEmail: 'comercial@otisforte.com.br',
+    contactPhone: '(11) 91155-9988',
+    projectsHistory: [
+      { projectName: 'Residencial Bella Vista (2026-015)', year: 2026, role: 'Instalação de Elevador Panorâmico', status: 'Em andamento' }
+    ]
+  },
+  {
+    id: 'p-6',
+    name: 'VoltAmp Instalações Elétricas',
+    type: 'Elétrica',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.3,
+    projectsCount: 9,
+    notes: 'Projetos elétricos consistentes e entrega de diagramas unifilares bem estruturados.',
+    contactEmail: 'projetos@voltamp.eng.br',
+    contactPhone: '(11) 91122-3344',
+    projectsHistory: [
+      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Projetos Elétricos Internos', status: 'Concluído' }
+    ]
+  },
+  {
+    id: 'p-6b',
+    name: 'SPDA & Cia Proteção Elétrica',
+    type: 'Elétrica',
+    recommendationLevel: 'Altamente Recomendado',
+    recommendationScore: 4.7,
+    projectsCount: 5,
+    notes: 'Especialistas em projetos de pára-raios (SPDA) e aterramento elétrico industrial e predial.',
+    contactEmail: 'contato@spdaecia.eng.br',
+    contactPhone: '(11) 97766-5544',
+    projectsHistory: [
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Malha de Aterramento e SPDA Predial', status: 'Em andamento' }
+    ]
+  },
+  {
+    id: 'p-7',
+    name: 'GreenGarden Paisagismo',
+    type: 'Paisagismo',
+    recommendationLevel: 'Altamente Recomendado',
+    recommendationScore: 4.8,
+    projectsCount: 11,
+    notes: 'Propostas de plantio e paisagismo incríveis. Excelente integração com nossos projetos de arquitetura externa.',
+    contactEmail: 'contato@greengarden.com.br',
+    contactPhone: '(11) 92233-4455',
+    projectsHistory: [
+      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Paisagismo das Áreas Verdes', status: 'Concluído' }
+    ]
+  },
+  {
+    id: 'p-7b',
+    name: 'FloraLux Jardins e Design',
+    type: 'Paisagismo',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.4,
+    projectsCount: 6,
+    notes: 'Execução rápida e fornecimento de mudas e árvores adultas de excelente procedência. Prazos pontuais.',
+    contactEmail: 'contato@floralux.com.br',
+    contactPhone: '(11) 96655-4433',
+    projectsHistory: [
+      { projectName: 'Residencial Bella Vista (2026-015)', year: 2026, role: 'Implantação do Jardim das Áreas Comuns', status: 'Em andamento' }
+    ]
+  },
+  {
+    id: 'p-8',
+    name: 'ClimaFrio Refrigeração e HVAC',
+    type: 'Refrigeração',
+    recommendationLevel: 'Recomendado',
+    recommendationScore: 4.5,
+    projectsCount: 7,
+    notes: 'Projetos de climatização (VRF e split) e ventilação mecânica detalhados com especificações claras.',
+    contactEmail: 'hvac@climafrio.eng.br',
+    contactPhone: '(11) 93344-5566',
+    projectsHistory: [
+      { projectName: 'Edifício Horizon (2026-010)', year: 2026, role: 'Projeto de Climatização VRF', status: 'Em andamento' }
+    ]
+  },
+  {
+    id: 'p-8b',
+    name: 'TermoAir Sistemas de Climatização',
+    type: 'Refrigeração',
+    recommendationLevel: 'Altamente Recomendado',
+    recommendationScore: 4.7,
+    projectsCount: 10,
+    notes: 'Projetos industriais e comerciais complexos de climatização central e dutada. Altíssima qualidade de entrega.',
+    contactEmail: 'engenharia@termoair.com.br',
+    contactPhone: '(11) 95533-2211',
+    projectsHistory: [
+      { projectName: 'Condomínio Horizonte da Mata (2026-004)', year: 2025, role: 'Climatização e Renovação de Ar do Club House', status: 'Concluído' }
     ]
   }
 ];
@@ -90,17 +245,20 @@ interface PartnersTabProps {
 }
 
 export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps) {
-  // Load state from localStorage
+  // Load state from localStorage or fallback
   const [partners, setPartners] = useState<Partner[]>(() => {
     const saved = localStorage.getItem('fpoles_partners');
+    let parsed: Partner[] = [];
     if (saved) {
       try {
-        return JSON.parse(saved);
-      } catch (e) {
-        // ignore and fallback
-      }
+        parsed = JSON.parse(saved);
+      } catch (e) {}
     }
-    return INITIAL_PARTNERS;
+    // If the list of partners is empty or contains fewer elements than our comprehensive INITIAL_PARTNERS, reset to use it.
+    if (parsed.length < INITIAL_PARTNERS.length) {
+      return INITIAL_PARTNERS;
+    }
+    return parsed;
   });
 
   // Save state to localStorage
@@ -108,15 +266,31 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
     localStorage.setItem('fpoles_partners', JSON.stringify(partners));
   }, [partners]);
 
-  // UI state
-  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(() => {
-    return partners.length > 0 ? partners[0].id : null;
+  // Load categories from localStorage or defaults
+  const [categories, setCategories] = useState<string[]>(() => {
+    const saved = localStorage.getItem('fpoles_partner_categories');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return ['Hidráulica', 'Elétrica', 'Estrutural', 'Paisagismo', 'Refrigeração', 'Iluminação', 'Esquadrias', 'Elevadores'];
   });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState('todos');
-  const [recommendationFilter, setRecommendationFilter] = useState('todos');
 
-  // Active notes state
+  useEffect(() => {
+    localStorage.setItem('fpoles_partner_categories', JSON.stringify(categories));
+  }, [categories]);
+
+  // Active Category State
+  const [activeCategory, setActiveCategory] = useState<string>('Hidráulica');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Modals state
+  const [isNewPartnerModalOpen, setIsNewPartnerModalOpen] = useState(false);
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  // Active notes state inside detail modal
   const [editableNotes, setEditableNotes] = useState('');
   const selectedPartner = partners.find(p => p.id === selectedPartnerId);
 
@@ -130,31 +304,29 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
   }, [selectedPartnerId, partners]);
 
   // Form state for creating a new partner
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPartnerName, setNewPartnerName] = useState('');
-  const [newPartnerType, setNewPartnerType] = useState('Projetista Complementar');
+  const [newPartnerType, setNewPartnerType] = useState('Hidráulica');
   const [newPartnerRecLevel, setNewPartnerRecLevel] = useState('Recomendado');
   const [newPartnerScore, setNewPartnerScore] = useState(4.0);
   const [newPartnerEmail, setNewPartnerEmail] = useState('');
   const [newPartnerPhone, setNewPartnerPhone] = useState('');
   const [newPartnerNotes, setNewPartnerNotes] = useState('');
 
-  // Project history sub-form state
+  // Project history sub-form state (inside detail modal)
   const [newProjName, setNewProjName] = useState('');
   const [newProjYear, setNewProjYear] = useState<number>(new Date().getFullYear());
   const [newProjRole, setNewProjRole] = useState('');
   const [newProjStatus, setNewProjStatus] = useState('Em andamento');
 
-  // Filter partners
+  // Filter partners: first by category (type) then by search query
   const filteredPartners = partners.filter(p => {
-    const nameMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                      p.notes.toLowerCase().includes(searchQuery.toLowerCase());
-    const typeMatch = typeFilter === 'todos' || p.type === typeFilter;
-    const recMatch = recommendationFilter === 'todos' || p.recommendationLevel === recommendationFilter;
-    return nameMatch && typeMatch && recMatch;
+    const categoryMatch = p.type === activeCategory;
+    const searchMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                        (p.notes && p.notes.toLowerCase().includes(searchQuery.toLowerCase()));
+    return categoryMatch && searchMatch;
   });
 
-  // Save observations
+  // Save observations/notes
   const handleSaveNotes = () => {
     if (!selectedPartnerId) return;
     setPartners(prev => prev.map(p => 
@@ -202,7 +374,6 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
       triggerToast('Estagiários não podem excluir dados do histórico.', 'warning');
       return;
     }
-
     if (!selectedPartnerId) return;
 
     setPartners(prev => prev.map(p => {
@@ -241,12 +412,11 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
     };
 
     setPartners(prev => [newPartner, ...prev]);
-    setSelectedPartnerId(newPartner.id);
-    setIsModalOpen(false);
+    setIsNewPartnerModalOpen(false);
 
     // Reset form
     setNewPartnerName('');
-    setNewPartnerType('Projetista Complementar');
+    setNewPartnerType(activeCategory);
     setNewPartnerRecLevel('Recomendado');
     setNewPartnerScore(4.0);
     setNewPartnerEmail('');
@@ -266,7 +436,8 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
     if (window.confirm('Tem certeza de que deseja remover este parceiro permanentemente?')) {
       const remaining = partners.filter(p => p.id !== id);
       setPartners(remaining);
-      setSelectedPartnerId(remaining.length > 0 ? remaining[0].id : null);
+      setIsDetailModalOpen(false);
+      setSelectedPartnerId(null);
       triggerToast('Parceiro removido com sucesso.', 'info');
     }
   };
@@ -277,13 +448,28 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
       case 'Altamente Recomendado':
         return 'bg-emerald-50 text-emerald-700 border border-emerald-250';
       case 'Recomendado':
-        return 'bg-slate-100 text-slate-800 border border-slate-300';
+        return 'bg-slate-100 text-slate-800 border border-slate-350';
       case 'Regular':
         return 'bg-amber-50 text-amber-700 border border-amber-250';
       case 'Não Recomendado':
         return 'bg-rose-50 text-rose-700 border border-rose-250';
       default:
         return 'bg-slate-50 text-slate-700 border border-slate-200';
+    }
+  };
+
+  // Add a new Category
+  const handleAddNewCategory = () => {
+    const newCat = window.prompt("Digite o nome do novo gênero de fornecedores:");
+    if (newCat && newCat.trim()) {
+      const trimmed = newCat.trim();
+      if (!categories.includes(trimmed)) {
+        setCategories(prev => [...prev, trimmed]);
+        setActiveCategory(trimmed);
+        triggerToast(`Gênero "${trimmed}" adicionado!`, 'success');
+      } else {
+        triggerToast("Esse gênero/categoria já existe.", "warning");
+      }
     }
   };
 
@@ -296,206 +482,201 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
             <Handshake className="w-5 h-5 text-slate-800" />
             <span>Fornecedores e Parceiros</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1">Gerencie a base de parceiros homologados, níveis de recomendação e histórico de obras conjuntas.</p>
+          <p className="text-xs text-slate-500 mt-1">Gerencie a base de parceiros homologados por categorias, avaliações e histórico de obras conjuntas.</p>
         </div>
         <button
           type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-slate-950 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-auto"
+          onClick={() => {
+            setNewPartnerType(activeCategory);
+            setIsNewPartnerModalOpen(true);
+          }}
+          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Novo Parceiro</span>
         </button>
       </div>
 
-      {/* Filters & Search Block */}
-      <div className="bg-white border border-slate-200/60 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
-          {/* Search input */}
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Pesquisar por nome ou anotação..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-sans text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:bg-white"
-            />
-            <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
-          </div>
+      {/* Category Tabs Block */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+        <div className="flex flex-wrap gap-2 overflow-x-auto max-w-full pb-1 scrollbar-none">
+          {categories.map(cat => {
+            const isActive = activeCategory === cat;
+            const count = partners.filter(p => p.type === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  setActiveCategory(cat);
+                  setSearchQuery('');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                  isActive 
+                    ? 'bg-slate-950 text-white border-slate-950 shadow-sm' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-850'
+                }`}
+              >
+                <span>{cat}</span>
+                <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-mono font-bold leading-none ${
+                  isActive ? 'bg-slate-850 text-white' : 'bg-slate-100 text-slate-500'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+          
+          {/* Add Category Button */}
+          <button
+            onClick={handleAddNewCategory}
+            className="px-3 py-1.5 rounded-xl border border-dashed border-slate-350 text-slate-500 hover:text-slate-900 hover:border-slate-800 transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" /> Gênero
+          </button>
+        </div>
 
-          {/* Type Filter */}
-          <div className="flex items-center gap-1">
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="bg-white border border-slate-205 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
-            >
-              <option value="todos">🛠️ Todos os Tipos</option>
-              <option value="Projetista Complementar">Projetista Complementar</option>
-              <option value="Fornecedor">Fornecedor</option>
-              <option value="Parceiro">Parceiro</option>
-              <option value="Outro">Outro</option>
-            </select>
-          </div>
-
-          {/* Recommendation Filter */}
-          <div className="flex items-center gap-1">
-            <select
-              value={recommendationFilter}
-              onChange={(e) => setRecommendationFilter(e.target.value)}
-              className="bg-white border border-slate-205 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
-            >
-              <option value="todos">🎖️ Recomendações</option>
-              <option value="Altamente Recomendado">Altamente Recomendado</option>
-              <option value="Recomendado">Recomendado</option>
-              <option value="Regular">Regular</option>
-              <option value="Não Recomendado">Não Recomendado</option>
-            </select>
-          </div>
+        {/* Search inside category */}
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder={`Procurar em ${activeCategory}...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-950 placeholder-slate-400"
+          />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
         </div>
       </div>
 
-      {/* Main Split Screen Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Partners List (5 cols) */}
-        <div className="lg:col-span-5 space-y-3 max-h-[700px] overflow-y-auto pr-1">
-          {filteredPartners.length === 0 ? (
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-8 text-center text-slate-400 font-medium">
-              Nenhum parceiro encontrado com os filtros aplicados.
-            </div>
-          ) : (
-            filteredPartners.map(p => {
-              const isSelected = p.id === selectedPartnerId;
-              return (
-                <div
-                  key={p.id}
-                  onClick={() => setSelectedPartnerId(p.id)}
-                  className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between relative group ${
-                    isSelected 
-                      ? 'border-slate-900 bg-slate-950 text-white shadow-md' 
-                      : 'border-slate-250 bg-white hover:border-slate-350 hover:shadow-sm text-slate-800'
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-0.5">
-                        <span className={`text-[9px] font-mono font-semibold uppercase ${isSelected ? 'text-slate-400' : 'text-slate-500'}`}>
-                          {p.type}
-                        </span>
-                        <h4 className="text-xs font-semibold font-sans line-clamp-1">{p.name}</h4>
-                      </div>
-                      <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 px-1.5 py-0.5 rounded-lg text-[10px] font-semibold shrink-0">
-                        <Star className="w-3 h-3 fill-amber-400 stroke-amber-500 shrink-0" />
-                        <span>{p.recommendationScore.toFixed(1)}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                      <span className={`px-2 py-0.5 rounded-full border text-[9px] font-semibold ${getRecommendationBadgeColor(p.recommendationLevel)}`}>
-                        {p.recommendationLevel}
-                      </span>
-                      <span className={`text-[10px] font-mono flex items-center gap-1 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
-                        <Briefcase className="w-3.5 h-3.5" />
-                        <span>{p.projectsCount} {p.projectsCount === 1 ? 'projeto' : 'projetos'}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Desktop Right Chevron */}
-                  <ChevronRight className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-all opacity-0 group-hover:opacity-100 ${
-                    isSelected ? 'text-white' : 'text-slate-400 group-hover:translate-x-0.5'
-                  }`} />
-                </div>
-              );
-            })
-          )}
+      {/* Partners Grid List */}
+      {filteredPartners.length === 0 ? (
+        <div className="bg-white border border-slate-200/60 rounded-3xl p-12 text-center text-slate-400 font-medium">
+          Nenhum parceiro cadastrado ou encontrado na categoria de <strong>{activeCategory}</strong>.
         </div>
-
-        {/* Right Column: Detailed View (7 cols) */}
-        <div className="lg:col-span-7">
-          {!selectedPartner ? (
-            <div className="bg-slate-100/60 border border-slate-200 border-dashed rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
-              <Handshake className="w-12 h-12 text-slate-300 stroke-[1.5] mb-3 animate-pulse" />
-              <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Nenhum Parceiro Selecionado</h3>
-              <p className="text-[11px] text-slate-400 mt-2 max-w-xs leading-normal">
-                Selecione um parceiro na lista ao lado para ver o histórico de projetos, dados de contato e gerenciar observações internas.
-              </p>
-            </div>
-          ) : (
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden divide-y divide-slate-100">
-              {/* Partner Detail Header */}
-              <div className="p-5 bg-slate-50 flex justify-between items-start gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] bg-slate-200 text-slate-800 border border-slate-300 px-2 py-0.5 rounded-md font-mono uppercase font-semibold">
-                      {selectedPartner.type}
-                    </span>
-                    <span className={`px-2 py-0.5 rounded-full border text-[9px] font-semibold ${getRecommendationBadgeColor(selectedPartner.recommendationLevel)}`}>
-                      {selectedPartner.recommendationLevel}
-                    </span>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredPartners.map(p => {
+            const count = p.projectsHistory ? p.projectsHistory.length : 0;
+            return (
+              <div
+                key={p.id}
+                onClick={() => {
+                  setSelectedPartnerId(p.id);
+                  setIsDetailModalOpen(true);
+                }}
+                className="bg-white border border-slate-200/60 rounded-3xl p-5 shadow-sm hover:shadow-md hover:border-slate-350 transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4 group relative"
+              >
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start gap-2">
+                    <h4 className="text-xs font-bold text-slate-900 line-clamp-1 group-hover:text-slate-950 font-sans tracking-tight">
+                      {p.name}
+                    </h4>
+                    
+                    <div className="flex items-center gap-0.5 bg-amber-50 border border-amber-200 text-amber-700 px-1.5 py-0.5 rounded-lg text-[9px] font-bold shrink-0">
+                      <Star className="w-3 h-3 fill-amber-400 stroke-amber-500 shrink-0" />
+                      <span>{p.recommendationScore.toFixed(1)}</span>
+                    </div>
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-900 font-sans tracking-tight">{selectedPartner.name}</h3>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-500 text-[11px] pt-1">
-                    {selectedPartner.contactEmail && (
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3.5 h-3.5 text-slate-400" />
-                        <a href={`mailto:${selectedPartner.contactEmail}`} className="hover:underline">{selectedPartner.contactEmail}</a>
-                      </span>
-                    )}
-                    {selectedPartner.contactPhone && (
-                      <span className="flex items-center gap-1">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{selectedPartner.contactPhone}</span>
-                      </span>
-                    )}
-                  </div>
+                  
+                  <p className="text-[10px] text-slate-400 font-medium line-clamp-2 leading-relaxed h-7">
+                    {p.notes || 'Sem observações cadastradas.'}
+                  </p>
                 </div>
 
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 px-2 py-1 rounded-xl text-xs font-semibold shadow-sm">
-                    <Star className="w-4 h-4 fill-amber-400 stroke-amber-500 shrink-0" />
-                    <span className="text-slate-900">{selectedPartner.recommendationScore.toFixed(1)} / 5.0</span>
+                <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-[10px] font-medium text-slate-500">
+                  <div className="flex items-center gap-1 font-mono">
+                    <Briefcase className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{count} {count === 1 ? 'projeto' : 'projetos'}</span>
                   </div>
-                  {userRole === 'admin' && (
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePartner(selectedPartner.id)}
-                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                      title="Excluir parceiro"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                  <span className={`px-2 py-0.5 rounded-full text-[8.5px] font-bold ${getRecommendationBadgeColor(p.recommendationLevel)}`}>
+                    {p.recommendationLevel}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* DETAIL MODAL (Opens when clicking a partner) */}
+      {isDetailModalOpen && selectedPartner && (
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl animate-scale-up flex flex-col max-h-[90vh]">
+            {/* Modal Header */}
+            <div className="bg-slate-50 p-5 border-b border-slate-150 flex justify-between items-start gap-4 shrink-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] bg-slate-200 text-slate-800 border border-slate-300 px-2 py-0.5 rounded-md font-mono uppercase font-bold">
+                    {selectedPartner.type}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded-full border text-[9px] font-bold ${getRecommendationBadgeColor(selectedPartner.recommendationLevel)}`}>
+                    {selectedPartner.recommendationLevel}
+                  </span>
+                </div>
+                <h3 className="text-sm font-semibold text-slate-955 font-sans tracking-tight">{selectedPartner.name}</h3>
+                
+                {/* Contact row */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-500 text-[10px] pt-1">
+                  {selectedPartner.contactEmail && (
+                    <span className="flex items-center gap-1">
+                      <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <a href={`mailto:${selectedPartner.contactEmail}`} className="hover:underline">{selectedPartner.contactEmail}</a>
+                    </span>
+                  )}
+                  {selectedPartner.contactPhone && (
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{selectedPartner.contactPhone}</span>
+                    </span>
                   )}
                 </div>
               </div>
 
-              {/* Editable Notes Section */}
-              <div className="p-5 space-y-3">
+              <div className="flex flex-col items-end gap-3 shrink-0">
+                <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 px-2 py-1 rounded-xl text-xs font-bold shadow-sm">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-500 shrink-0" />
+                  <span className="text-slate-900">{selectedPartner.recommendationScore.toFixed(1)} / 5.0</span>
+                </div>
+                
+                <button
+                  onClick={() => setIsDetailModalOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
+              
+              {/* Internal Comments / Observations */}
+              <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-1.5">
+                  <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" />
                     <span>Observações Internas (Editável)</span>
                   </h4>
                   <button
                     type="button"
                     onClick={handleSaveNotes}
-                    className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-[10px] font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                    className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-[9px] font-bold transition-all flex items-center gap-1 cursor-pointer"
                   >
-                    <Save className="w-3 h-3" />
-                    <span>Salvar Observações</span>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Salvar Notas</span>
                   </button>
                 </div>
                 <textarea
                   value={editableNotes}
                   onChange={(e) => setEditableNotes(e.target.value)}
-                  placeholder="Insira detalhes sobre a qualidade do trabalho, prazos, formas de contato preferidas ou problemas identificados..."
-                  className="w-full min-h-[100px] p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-sans text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:bg-white resize-y"
+                  placeholder="Descreva a qualidade do serviço, prazos, comportamento técnico ou facilidade de negociação..."
+                  className="w-full min-h-[90px] p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-sans text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:bg-white resize-y placeholder-slate-400"
                 />
               </div>
 
               {/* Projects History Section */}
-              <div className="p-5 space-y-4">
-                <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-1.5">
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" />
                   <span>Histórico de Projetos Conjuntos</span>
                 </h4>
@@ -505,8 +686,8 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                     Nenhum projeto registrado no histórico deste parceiro.
                   </div>
                 ) : (
-                  <div className="border border-slate-200/60 rounded-xl overflow-hidden shadow-xs">
-                    <table className="w-full text-left border-collapse text-[11px]">
+                  <div className="border border-slate-200/60 rounded-xl overflow-hidden shadow-xs bg-white">
+                    <table className="w-full text-left border-collapse text-[10.5px]">
                       <thead>
                         <tr className="bg-slate-50 text-slate-500 font-mono text-[9px] uppercase border-b border-slate-200/60">
                           <th className="p-2.5 px-3">Projeto</th>
@@ -518,12 +699,12 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {selectedPartner.projectsHistory.map((proj, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50/50 text-slate-700 font-medium">
+                          <tr key={idx} className="hover:bg-slate-50/30 text-slate-700 font-medium">
                             <td className="p-2.5 px-3 font-semibold font-sans">{proj.projectName}</td>
                             <td className="p-2.5 px-3 text-center font-mono text-slate-500">{proj.year}</td>
                             <td className="p-2.5 px-3 text-slate-600">{proj.role}</td>
                             <td className="p-2.5 px-3 text-center">
-                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold ${
+                              <span className={`px-1.5 py-0.5 rounded text-[8.5px] font-mono font-semibold ${
                                 proj.status === 'Concluído' 
                                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
                                   : 'bg-amber-50 text-amber-700 border border-amber-100'
@@ -536,10 +717,10 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteProject(idx)}
-                                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
+                                  className="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                                   title="Remover projeto"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <Trash2 className="w-3.5 h-3.5 mx-auto" />
                                 </button>
                               </td>
                             )}
@@ -553,7 +734,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                 {/* Add Project Sub-form */}
                 {userRole !== 'estagiario' && (
                   <form onSubmit={handleAddProject} className="bg-slate-50/60 border border-slate-200/60 p-4 rounded-xl space-y-3">
-                    <span className="text-[10px] font-semibold text-slate-700 uppercase tracking-tight block">➕ Registrar Novo Projeto Conjunto</span>
+                    <span className="text-[9.5px] font-bold text-slate-700 uppercase tracking-tight block">➕ Registrar Novo Projeto Conjunto</span>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                       <div className="md:col-span-5">
                         <input
@@ -561,7 +742,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                           placeholder="Nome do Projeto..."
                           value={newProjName}
                           onChange={(e) => setNewProjName(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-slate-950"
+                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-slate-950 placeholder-slate-400"
                           required
                         />
                       </div>
@@ -571,7 +752,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                           placeholder="Ano"
                           value={newProjYear}
                           onChange={(e) => setNewProjYear(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-slate-950 text-center"
+                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-slate-950 text-center placeholder-slate-400"
                           required
                         />
                       </div>
@@ -581,7 +762,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                           placeholder="Atuação (ex: Hidráulica)"
                           value={newProjRole}
                           onChange={(e) => setNewProjRole(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-slate-950"
+                          className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-slate-950 placeholder-slate-400"
                           required
                         />
                       </div>
@@ -598,7 +779,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                     </div>
                     <button
                       type="submit"
-                      className="px-3 py-1.5 bg-slate-950 hover:bg-slate-900 text-white text-xs font-semibold rounded-lg transition-all cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 bg-slate-950 hover:bg-slate-900 text-white text-[10px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1 uppercase tracking-wide"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Adicionar Projeto</span>
@@ -607,21 +788,43 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                 )}
               </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Register New Partner Modal */}
-      {isModalOpen && (
+            {/* Modal Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-150 flex items-center justify-between shrink-0">
+              <div>
+                {userRole === 'admin' && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeletePartner(selectedPartner.id)}
+                    className="px-3.5 py-2 bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Excluir Parceiro</span>
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => setIsDetailModalOpen(false)}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm"
+              >
+                Fechar Painel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REGISTER NEW PARTNER MODAL */}
+      {isNewPartnerModalOpen && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up">
+          <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up">
             <div className="bg-slate-950 text-white px-5 py-4 flex justify-between items-center">
               <h3 className="font-semibold text-sm flex items-center gap-2">
                 <Handshake className="w-4 h-4 text-slate-300" />
                 <span>Cadastrar Novo Fornecedor / Parceiro</span>
               </h3>
               <button 
-                onClick={() => setIsModalOpen(false)} 
+                onClick={() => setIsNewPartnerModalOpen(false)} 
                 className="text-slate-400 hover:text-white transition cursor-pointer"
               >
                 ✕
@@ -632,7 +835,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Name */}
                 <div className="md:col-span-2 space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Nome da Empresa / Profissional *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nome da Empresa / Profissional *</label>
                   <input
                     type="text"
                     placeholder="Ex: Calculus Engenharia Estrutural"
@@ -643,24 +846,23 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
                   />
                 </div>
 
-                {/* Type */}
+                {/* Type (Category) */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Tipo *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Gênero / Categoria *</label>
                   <select
                     value={newPartnerType}
                     onChange={(e) => setNewPartnerType(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-700 outline-none cursor-pointer"
                   >
-                    <option value="Projetista Complementar">Projetista Complementar</option>
-                    <option value="Fornecedor">Fornecedor</option>
-                    <option value="Parceiro">Parceiro</option>
-                    <option value="Outro">Outro</option>
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
 
                 {/* Score */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Nota de Recomendação (1 a 5) *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nota de Recomendação (1 a 5) *</label>
                   <input
                     type="number"
                     min="1.0"
@@ -676,7 +878,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
 
                 {/* Rec Level */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Nível de Recomendação *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nível de Recomendação *</label>
                   <select
                     value={newPartnerRecLevel}
                     onChange={(e) => setNewPartnerRecLevel(e.target.value)}
@@ -691,7 +893,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
 
                 {/* Email */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">E-mail de Contato</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">E-mail de Contato</label>
                   <input
                     type="email"
                     placeholder="contato@empresa.com"
@@ -703,7 +905,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
 
                 {/* Phone */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Telefone de Contato</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Telefone de Contato</label>
                   <input
                     type="text"
                     placeholder="(11) 99999-9999"
@@ -715,7 +917,7 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
 
                 {/* Notes */}
                 <div className="md:col-span-2 space-y-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase">Observações Iniciais</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Observações Iniciais</label>
                   <textarea
                     placeholder="Informações relevantes sobre este parceiro..."
                     value={newPartnerNotes}
@@ -728,14 +930,14 @@ export default function PartnersTab({ userRole, triggerToast }: PartnersTabProps
               <div className="pt-4 border-t border-slate-100 flex justify-end gap-2.5">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer"
+                  onClick={() => setIsNewPartnerModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-500 bg-slate-105 hover:bg-slate-200 rounded-xl transition cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-950 hover:bg-slate-900 rounded-xl transition shadow-sm cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-950 hover:bg-slate-900 rounded-xl transition shadow cursor-pointer"
                 >
                   Cadastrar Parceiro
                 </button>

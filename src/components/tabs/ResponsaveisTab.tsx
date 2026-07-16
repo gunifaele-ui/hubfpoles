@@ -70,46 +70,73 @@ export default function ResponsaveisTab({
         <p className="text-xs text-slate-500 mt-1">Atribuição de equipe e gestão de responsáveis técnicos primários e secundários.</p>
       </div>
 
-      {/* Dynamic Statistics Block */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        {stats.map(s => {
-          const isSelected = respFilter === s.prof;
-          return (
+      {/* Dynamic Statistics Block: Premium ACRU-style capsule chart */}
+      <div className="bg-white border border-slate-200/60 rounded-3xl p-5 shadow-sm space-y-5">
+        <div className="flex justify-between items-center">
+          <div>
+            <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Métricas de Alocação</span>
+            <h3 className="text-sm font-semibold text-slate-950 font-sans tracking-tight mt-0.5">Volume de Projetos por Profissional</h3>
+            <p className="text-[10px] text-slate-500 mt-0.5">Clique em um profissional para filtrar a tabela de projetos.</p>
+          </div>
+          {respFilter !== 'todos' && (
             <button
-              key={s.prof}
-              type="button"
-              onClick={() => {
-                setRespFilter(isSelected ? 'todos' : s.prof);
-                triggerToast(`Filtrado por: ${s.prof}`, 'info');
-              }}
-              className={`p-3 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden flex flex-col justify-between h-24 cursor-pointer ${
-                isSelected 
-                  ? 'border-slate-900 bg-slate-900 text-white shadow-md' 
-                  : 'border-slate-200/60 bg-white hover:border-slate-300 hover:shadow-sm'
-              }`}
+              onClick={() => setRespFilter('todos')}
+              className="text-[9px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full font-semibold transition-colors cursor-pointer"
             >
-              <div>
-                <h4 className="text-[11px] font-semibold font-sans line-clamp-1">{s.prof}</h4>
-                <span className={`text-[9px] font-sans ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>Total: {s.total} {s.total === 1 ? 'proj' : 'projs'}</span>
-              </div>
-              <div className="flex flex-wrap gap-1 items-center text-[8px] font-sans font-semibold mt-1">
-                <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
-                  {s.activeCount} Ativos
-                </span>
-                {s.standbyCount > 0 && (
-                  <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/10 text-white/90' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
-                    {s.standbyCount} Standby
-                  </span>
-                )}
-                {s.pendingCount > 0 && (
-                  <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/10 text-white/70' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
-                    {s.pendingCount} Pendentes
-                  </span>
-                )}
-              </div>
+              Limpar Filtro
             </button>
-          );
-        })}
+          )}
+        </div>
+
+        {/* Capsule bar chart wrapper */}
+        <div className="flex justify-around items-end h-[160px] pt-4 px-2 overflow-x-auto scrollbar-none">
+          {stats.map((s, idx) => {
+            const isSelected = respFilter === s.prof;
+            const maxProjectsCount = Math.max(...stats.map(item => item.total), 4);
+            const percentage = Math.min(100, Math.max(10, (s.total / maxProjectsCount) * 100));
+            
+            // Shorten name for display
+            const shortName = s.prof.replace('Arq. ', '').replace('Eng. ', '');
+
+            // Color scheme depending on state
+            const barColor = isSelected 
+              ? 'bg-slate-950 ring-2 ring-slate-950 ring-offset-2' 
+              : 'bg-slate-800 hover:bg-slate-900';
+
+            return (
+              <button
+                key={s.prof}
+                type="button"
+                onClick={() => {
+                  setRespFilter(isSelected ? 'todos' : s.prof);
+                  triggerToast(isSelected ? 'Filtro limpo' : `Filtrado por: ${s.prof}`, 'info');
+                }}
+                className="flex flex-col items-center gap-2 group relative cursor-pointer focus:outline-none shrink-0"
+              >
+                {/* Tooltip on hover */}
+                <div className="absolute -top-12 scale-0 group-hover:scale-100 bg-slate-950 text-white text-[8px] font-mono font-semibold p-2 rounded-xl transition-all shadow-md z-15 whitespace-nowrap text-center space-y-0.5">
+                  <p className="font-bold text-[9px] border-b border-white/10 pb-0.5 mb-0.5">{s.prof}</p>
+                  <p>{s.total} Projetos no total</p>
+                  <p className="text-slate-350">{s.activeCount} Ativos • {s.standbyCount} Standby</p>
+                </div>
+                
+                {/* Rounded capsule bar */}
+                <div className={`w-7 h-[110px] bg-slate-50 border ${isSelected ? 'border-slate-950' : 'border-slate-100'} rounded-full relative overflow-hidden flex items-end justify-center shadow-inner transition-all duration-200`}>
+                  {/* Fill capsule block */}
+                  <div 
+                    className={`w-full rounded-full ${barColor} transition-all duration-500 ease-out`} 
+                    style={{ height: `${percentage}%` }}
+                  />
+                </div>
+                
+                {/* Label */}
+                <span className={`text-[9.5px] font-bold uppercase tracking-tight font-sans transition-colors ${isSelected ? 'text-slate-900 font-extrabold' : 'text-slate-400 group-hover:text-slate-650'}`}>
+                  {shortName}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Filters Block */}
@@ -200,9 +227,9 @@ export default function ResponsaveisTab({
                         onChange={(e) => {
                           const updated = projects.map(p => p.id === proj.id ? { ...p, responsavel: e.target.value } : p);
                           setProjects(updated);
-                          triggerToast('Responsável principal atualizado!', 'info');
+                          triggerToast('Responsável principal updated!', 'info');
                         }}
-                        className="bg-transparent border-none p-1 rounded cursor-pointer w-full font-semibold focus:outline-none focus:bg-slate-50 text-[11px] text-slate-700"
+                        className="bg-transparent border-none p-1 pr-6 rounded cursor-pointer w-full font-semibold focus:outline-none focus:bg-slate-50 text-[11px] text-slate-700"
                       >
                         {PROFESSIONALS.map(prof => (
                           <option key={prof} value={prof}>{prof}</option>
@@ -219,7 +246,7 @@ export default function ResponsaveisTab({
                           setProjects(updated);
                           triggerToast('Responsabilidade secundária atualizada!', 'info');
                         }}
-                        className="bg-transparent border-none p-1 rounded cursor-pointer w-full font-semibold focus:outline-none focus:bg-slate-50 text-[11px] text-slate-700"
+                        className="bg-transparent border-none p-1 pr-6 rounded cursor-pointer w-full font-semibold focus:outline-none focus:bg-slate-50 text-[11px] text-slate-700"
                       >
                         {PROFESSIONALS.map(prof => (
                           <option key={prof} value={prof}>{prof}</option>
@@ -236,7 +263,7 @@ export default function ResponsaveisTab({
                           setProjects(updated);
                           triggerToast(`Projeto "${proj.name}" definido como ${e.target.value}!`, 'info');
                         }}
-                        className={`p-1 rounded font-semibold text-[9px] uppercase cursor-pointer border text-center ${
+                        className={`p-1 pl-2 pr-6 rounded font-semibold text-[9px] uppercase cursor-pointer border text-left ${
                           isStandby 
                             ? 'bg-amber-50 text-amber-700 border-amber-200' 
                             : proj.status === 'Pendente' 

@@ -1,17 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Sparkles, Send, RotateCcw, AlertTriangle, Check, Loader2, MessageSquare, Bot, X } from "lucide-react";
+import { Send, RotateCcw, AlertTriangle, Check, Loader2, MessageSquare, Bot, X } from "lucide-react";
 
 interface GeminiAssistantProps {
-  tasks: any[];
-  projects: any[];
-  complementares: any[];
-  tablets: any[];
-  placas: any[];
-  clashes: any[];
-  licenses: any[];
-  backupRecords: any[];
-  revitRequirements: any[];
+  tasks?: any[];
+  projects?: any[];
+  complementares?: any[];
+  tablets?: any[];
+  placas?: any[];
+  clashes?: any[];
+  licenses?: any[];
+  backupRecords?: any[];
+  revitRequirements?: any[];
 }
+
+const FpolesAIIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className}
+  >
+    {/* Left Bar */}
+    <rect x="2" y="12" width="11" height="2" />
+    {/* Middle Bar (Raised) */}
+    <rect x="13" y="9" width="6" height="2" />
+    {/* Right Bar */}
+    <rect x="19" y="12" width="3" height="2" />
+  </svg>
+);
 
 interface Message {
   id: string;
@@ -74,59 +89,64 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
 
   const getApplicationContext = () => {
     return {
-      tasks: tasks.map((t) => ({
+      tasks: (tasks || []).map((t) => ({
         titulo: t.title,
         projeto: t.project,
         data: t.date,
         status: t.status,
         prioridade: t.priority,
       })),
-      projects: projects.map((p) => ({
+      projects: (projects || []).map((p) => ({
         codigo: p.code,
         nome: p.name,
         responsavel: p.responsavel,
         status: p.status,
+        tabletStatus: p.tabletStatus,
+        placaStatus: p.placaStatus,
+        tabletMonth: p.tabletMonth,
+        placaMonth: p.placaMonth,
       })),
-      complementares: complementares.map((c) => ({
+      complementares: (complementares || []).map((c) => ({
         titulo: c.title,
         disciplina: c.discipline,
         status: c.status,
         autor: c.author,
         atualizado: c.updated,
       })),
-      tablets: tablets.map((t) => ({
-        tecnico: t.tecnico,
-        projeto: t.project,
-        status: t.status,
-        ultimaSincronizacao: t.lastSync,
-      })),
-      placas: placas.map((p) => ({
-        cliente: p.client,
-        local: p.local,
-        transportadora: p.carrier,
-        status: p.status,
-        atualizado: p.updated,
-      })),
-      clashesBIM: clashes.map((c) => ({
+      tablets: (projects || [])
+        .filter(p => p.tabletStatus && p.tabletStatus !== 'Não Necessita')
+        .map(p => ({
+          projeto: p.name,
+          status: p.tabletStatus,
+          mesPlanejado: p.tabletMonth || 'Não Definido'
+        })),
+      placas: (projects || [])
+        .filter(p => p.placaStatus && p.placaStatus !== 'Não Necessita')
+        .map(p => ({
+          projeto: p.name,
+          status: p.placaStatus,
+          mesPlanejado: p.placaMonth || 'Não Definido'
+        })),
+      clashesBIM: (clashes || []).map((c) => ({
         elementoA: c.elementA,
         elementoB: c.elementB,
         severidade: c.severity,
         status: c.status,
         andar: c.floor,
       })),
-      backupRecords: backupRecords.map((b) => ({
+      backupRecords: (backupRecords || []).map((b) => ({
         projeto: b.project,
         fase: b.fase,
         status: b.status,
         tecnico: b.tecnico,
       })),
-      revitRequirements: revitRequirements.map((r) => ({
+      revitRequirements: (revitRequirements || []).map((r) => ({
         titulo: r.title,
         prioridade: r.priority,
         status: r.status,
         notas: r.notes,
       })),
-      licenses: licenses.map((l) => ({
+      licenses: (licenses || []).map((l) => ({
         usuario: l.usuario,
         hardware: l.hardware,
         software: l.software,
@@ -307,8 +327,8 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b border-black/10 pb-3 mb-3 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-black text-white rounded-xl animate-pulse">
-                <Sparkles className="w-4 h-4" />
+              <div className="p-1.5 bg-black text-white rounded-xl animate-pulse flex items-center justify-center">
+                <FpolesAIIcon className="w-5.5 h-5.5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
@@ -464,7 +484,7 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
         {isOpen ? (
           <X className="w-5 h-5 transition-transform rotate-0 group-hover:rotate-90 duration-300" />
         ) : (
-          <Sparkles className="w-5 h-5 animate-pulse" />
+          <FpolesAIIcon className="w-7 h-7 animate-pulse" />
         )}
         {!isOpen && (
           <span className="absolute right-16 bg-black text-white text-[10px] uppercase font-mono font-semibold tracking-wider py-1 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow border border-white/20 pointer-events-none">

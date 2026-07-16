@@ -35,9 +35,29 @@ export const INITIAL_TASKS: Task[] = [
   { id: 't5', archId: 'sofia', date: '2026-07-13', title: 'Sondagem de Cantarias e Vãos', project: 'Reabilitação Palácio Chiado', status: 'Realizado', priority: 'Alta' },
   { id: 't6', archId: 'sofia', date: '2026-07-16', title: 'Reunião de Obra com Fiscalização', project: 'Reabilitação Palácio Chiado', status: 'Pendente', priority: 'Alta' },
   
+  // Miguel
+  { id: 't_mig1', archId: 'miguel', date: '2026-07-13', title: 'Estudo de Layout de Estacionamento', project: 'Terminal Logístico Norte', status: 'Realizado', priority: 'Média' },
+  { id: 't_mig2', archId: 'miguel', date: '2026-07-15', title: 'Dimensionamento de Vagas Especiais', project: 'Terminal Logístico Norte', status: 'Pendente', priority: 'Baixa' },
+
+  // Ana
+  { id: 't_ana1', archId: 'ana', date: '2026-07-14', title: 'Modelação de Layout Interno Aptos', project: 'Residencial Bela Vista', status: 'Realizado', priority: 'Alta' },
+  { id: 't_ana2', archId: 'ana', date: '2026-07-17', title: 'Revisão de Esquadrias e Vãos', project: 'Residencial Bela Vista', status: 'Pendente', priority: 'Média' },
+
+  // João
+  { id: 't_jo1', archId: 'joao', date: '2026-07-13', title: 'Detalhamento de Fachada Glazing', project: 'Torre Oriente Office', status: 'Pendente', priority: 'Alta' },
+  { id: 't_jo2', archId: 'joao', date: '2026-07-16', title: 'Modelação dos Perfis de Alumínio', project: 'Torre Oriente Office', status: 'Realizado', priority: 'Média' },
+
+  // Maria
+  { id: 't_ma1', archId: 'maria', date: '2026-07-14', title: 'Compatibilização de Infraestrutura', project: 'Parque Escolar Sintra', status: 'Realizado', priority: 'Alta' },
+  { id: 't_ma2', archId: 'maria', date: '2026-07-15', title: 'Ajuste de Alturas de Forro Gesso', project: 'Parque Escolar Sintra', status: 'Pendente', priority: 'Média' },
+
+  // Ricardo
+  { id: 't_ri1', archId: 'ricardo', date: '2026-07-15', title: 'Memorial Descritivo de Acabamentos', project: 'Torre Oriente Office', status: 'Pendente', priority: 'Baixa' },
+
   // Previous Week 4 (2026-07-06 to 2026-07-12)
   { id: 't7', archId: 'pedro', date: '2026-07-07', title: 'Modelação BIM Lajes de Fundação', project: 'Residencial Bela Vista', status: 'Realizado', priority: 'Alta' },
-  { id: 't8', archId: 'claudia', date: '2026-07-08', title: 'Definição de Cores de Fachada', project: 'Torre Oriente Office', status: 'Realizado', priority: 'Baixa' }
+  { id: 't8', archId: 'claudia', date: '2026-07-08', title: 'Definição de Cores de Fachada', project: 'Torre Oriente Office', status: 'Realizado', priority: 'Baixa' },
+  { id: 't_prev_ana', archId: 'ana', date: '2026-07-09', title: 'Levantamento Métrico no Local', project: 'Residencial Bela Vista', status: 'Realizado', priority: 'Alta' }
 ];
 
 export const INITIAL_COMPLEMENTARES: Complementar[] = [
