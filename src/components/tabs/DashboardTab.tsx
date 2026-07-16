@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   FileCode, Lock, Smartphone, ArrowRight, LayoutDashboard, Calendar, Users, 
-  Briefcase, Database, Box, Truck 
+  Briefcase, Database, Box, Truck, BarChart3
 } from 'lucide-react';
 import { Task, Project, Complementar, Tablet, Placa, Clash, PrefeituraCredential, SoftwareLicense } from '../../types';
 
@@ -10,7 +10,7 @@ interface DashboardTabProps {
   setActiveTab: (tab: string) => void;
   complementares: Complementar[];
   licenses: SoftwareLicense[];
-  tablets: Tablet[];
+  projects: Project[];
 }
 
 export default function DashboardTab({
@@ -18,7 +18,7 @@ export default function DashboardTab({
   setActiveTab,
   complementares,
   licenses,
-  tablets
+  projects
 }: DashboardTabProps) {
   const pendingComplementaresCount = complementares.filter(
     c => c.status === 'Pendente' || c.status === 'Sob Revisão'
@@ -28,8 +28,8 @@ export default function DashboardTab({
     lic => lic.revitData && lic.revitData !== '-'
   ).length;
 
-  const inStockTabletsCount = tablets.filter(
-    t => t.status === 'Em Stock'
+  const deliveredTabletsCount = projects.filter(
+    p => p.tabletStatus === 'Entregue'
   ).length;
 
   const SHORTCUT_ICONS: { [key: string]: React.ComponentType<any> } = {
@@ -41,11 +41,13 @@ export default function DashboardTab({
     senhas: Lock,
     backups: Database,
     logistica: Truck,
+    executive: BarChart3,
   };
 
   const shortcuts = [
     { tab: 'cronograma', label: 'Cronograma', desc: 'Planejamento semanal de atividades por arquiteto.' },
     { tab: 'responsaveis', label: 'Responsáveis por Projeto', desc: 'Atribuição de equipe e gestão de responsáveis.' },
+    ...(userRole !== 'estagiario' ? [{ tab: 'executive', label: 'Painel Executivo', desc: 'Indicadores estratégicos de produtividade, SLAs e BIM para os sócios.' }] : []),
     { tab: 'complementares', label: 'Projetos Complementares', desc: 'Modelos e arquivos de estruturas, hidráulica e incêndio.' },
     { tab: 'backups', label: 'Backup Semanal', desc: 'Auditoria de backups das fases dos projetos.' },
     { tab: 'senhas', label: 'Senhas', desc: 'Cofre de credenciais de portais governamentais e e-mails.' },
@@ -66,8 +68,8 @@ export default function DashboardTab({
           <div className="space-y-3 w-full">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Engenharias</span>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Aguardando Retorno</h3>
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-sans">Engenharias</span>
+                <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Aguardando Retorno</h3>
               </div>
               <div className="p-3 bg-slate-950 text-white rounded-xl shrink-0 group-hover:bg-slate-900 transition-colors">
                 <FileCode className="w-5 h-5" />
@@ -75,10 +77,10 @@ export default function DashboardTab({
             </div>
             
             <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-slate-900 font-sans tracking-tight">
+              <div className="text-3xl font-semibold text-slate-900 font-sans tracking-tight">
                 {pendingComplementaresCount}
               </div>
-              <span className="text-[10px] font-mono text-slate-400">ficheiros pendentes</span>
+              <span className="text-[10px] font-sans text-slate-400">ficheiros pendentes</span>
             </div>
             
             <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
@@ -96,8 +98,8 @@ export default function DashboardTab({
           <div className="space-y-3 w-full">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Ativos de TI</span>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Renovação de Software</h3>
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-sans">Ativos de TI</span>
+                <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Renovação de Software</h3>
               </div>
               <div className="p-3 bg-slate-950 text-white rounded-xl shrink-0 group-hover:bg-slate-900 transition-colors">
                 <Lock className="w-5 h-5" />
@@ -105,10 +107,10 @@ export default function DashboardTab({
             </div>
             
             <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-slate-900 font-sans tracking-tight">
+              <div className="text-3xl font-semibold text-slate-900 font-sans tracking-tight">
                 {expiringLicensesCount}
               </div>
-              <span className="text-[10px] font-mono text-slate-400">licenças ativas</span>
+              <span className="text-[10px] font-sans text-slate-400">licenças ativas</span>
             </div>
 
             <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
@@ -126,8 +128,8 @@ export default function DashboardTab({
           <div className="space-y-3 w-full">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Inventário</span>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Tablets em Estoque</h3>
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-sans">Logística</span>
+                <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-tight group-hover:text-slate-900 transition-colors">Tablets Entregues</h3>
               </div>
               <div className="p-3 bg-slate-950 text-white rounded-xl shrink-0 group-hover:bg-slate-900 transition-colors">
                 <Smartphone className="w-5 h-5" />
@@ -135,10 +137,10 @@ export default function DashboardTab({
             </div>
             
             <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-slate-900 font-sans tracking-tight">
-                {inStockTabletsCount}
+              <div className="text-3xl font-semibold text-slate-900 font-sans tracking-tight">
+                {deliveredTabletsCount}
               </div>
-              <span className="text-[10px] font-mono text-slate-400">dispositivos em stock</span>
+              <span className="text-[10px] font-sans text-slate-400">ativos em obras</span>
             </div>
 
             <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
@@ -152,7 +154,7 @@ export default function DashboardTab({
       {/* Main Dense Workspace Area - Shortcuts */}
       <div className="space-y-4 pt-2">
         <div className="border-b border-slate-100 pb-2">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-sans">Acesso Rápido aos Módulos</h3>
+          <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-sans">Acesso Rápido aos Módulos</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {shortcuts.map((sc, idx) => {
@@ -171,7 +173,7 @@ export default function DashboardTab({
                     <ArrowRight className="w-3.5 h-3.5 text-slate-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-bold text-slate-800 text-xs group-hover:text-slate-900 transition-colors uppercase tracking-tight">
+                    <h4 className="font-semibold text-slate-800 text-xs group-hover:text-slate-900 transition-colors uppercase tracking-tight">
                       {sc.label}
                     </h4>
                     <p className="text-[11px] text-slate-400 font-sans leading-normal">{sc.desc}</p>

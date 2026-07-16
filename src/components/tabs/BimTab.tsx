@@ -120,20 +120,20 @@ export default function BimTab({
       {/* Top Info Stat Widgets */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200/60 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] text-slate-400 uppercase font-bold font-mono">Total de Requisitos</span>
-          <span className="text-2xl font-bold text-slate-800">{totalCount}</span>
+          <span className="text-[10px] text-slate-400 uppercase font-semibold font-mono">Total de Requisitos</span>
+          <span className="text-2xl font-semibold text-slate-800">{totalCount}</span>
         </div>
         <div className="bg-red-50/50 border border-red-100 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] text-red-600/80 uppercase font-bold font-mono">Pendente</span>
-          <span className="text-2xl font-bold text-red-700">{pendingCount}</span>
+          <span className="text-[10px] text-red-600/80 uppercase font-semibold font-mono">Pendente</span>
+          <span className="text-2xl font-semibold text-red-700">{pendingCount}</span>
         </div>
         <div className="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] text-amber-700/80 uppercase font-bold font-mono">Em Estudo</span>
-          <span className="text-2xl font-bold text-amber-800">{studyCount}</span>
+          <span className="text-[10px] text-amber-700/80 uppercase font-semibold font-mono">Em Estudo</span>
+          <span className="text-2xl font-semibold text-amber-800">{studyCount}</span>
         </div>
         <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] text-emerald-600/80 uppercase font-bold font-mono">Implementado</span>
-          <span className="text-2xl font-bold text-emerald-700">{completedCount}</span>
+          <span className="text-[10px] text-emerald-600/80 uppercase font-semibold font-mono">Implementado</span>
+          <span className="text-2xl font-semibold text-emerald-700">{completedCount}</span>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ export default function BimTab({
       <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
-            <h2 className="font-bold text-sm text-slate-800">
+            <h2 className="font-semibold text-sm text-slate-800">
               Melhorias para Padrão e Template Revit
             </h2>
             <p className="text-xs text-slate-400 mt-1">Sugira elementos, famílias ou padrões que precisam ser incorporados ou revisados no template oficial.</p>
@@ -150,7 +150,7 @@ export default function BimTab({
           <button
             type="button"
             onClick={() => setShowAddRevitReq(!showAddRevitReq)}
-            className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Sugerir Melhoria
           </button>
@@ -160,13 +160,13 @@ export default function BimTab({
         {showAddRevitReq && (
           <form onSubmit={handleAddRevitRequirement} className="bg-slate-50 border border-slate-200/60 p-5 rounded-xl space-y-4 animate-fade-in">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">Nova Sugestão de Padrão</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-800">Nova Sugestão de Padrão</h3>
               <button type="button" onClick={() => setShowAddRevitReq(false)} className="text-xs text-slate-400 hover:text-slate-600 font-semibold">Cancelar</button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2 space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase">O que adicionar / modificar no template *</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase">O que adicionar / modificar no template *</label>
                 <input
                   type="text"
                   required
@@ -178,7 +178,7 @@ export default function BimTab({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase">Prioridade</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase">Prioridade</label>
                 <select
                   value={newRevitReqPriority}
                   onChange={e => setNewRevitReqPriority(e.target.value as any)}
@@ -191,7 +191,7 @@ export default function BimTab({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase">Solicitante (Arquiteto)</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase">Solicitante (Arquiteto)</label>
                 <select
                   value={newRevitReqArchitectId}
                   onChange={e => setNewRevitReqArchitectId(e.target.value)}
@@ -204,7 +204,7 @@ export default function BimTab({
               </div>
 
               <div className="md:col-span-2 space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase">Observações / Detalhes</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase">Observações / Detalhes</label>
                 <input
                   type="text"
                   value={newRevitReqNotes}
@@ -218,7 +218,7 @@ export default function BimTab({
             <div className="flex justify-end pt-2">
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors cursor-pointer shadow-md"
+                className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition-colors cursor-pointer shadow-md"
               >
                 Salvar Sugestão
               </button>
@@ -241,14 +241,14 @@ export default function BimTab({
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
             {/* Status Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Estado:</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-sans">Estado:</span>
               <div className="flex gap-1">
                 {['Todas', 'Pendente', 'Em Estudo', 'Implementado'].map(st => (
                   <button
                     key={st}
                     type="button"
                     onClick={() => setRevitStatusFilter(st as any)}
-                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase cursor-pointer transition-all border ${
+                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-semibold uppercase cursor-pointer transition-all border ${
                       revitStatusFilter === st
                         ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                         : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -262,14 +262,14 @@ export default function BimTab({
 
             {/* Priority Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Prioridade:</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-sans">Prioridade:</span>
               <div className="flex gap-1">
                 {['Todas', 'Alta', 'Média', 'Baixa'].map(pr => (
                   <button
                     key={pr}
                     type="button"
                     onClick={() => setRevitPriorityFilter(pr as any)}
-                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase cursor-pointer transition-all border ${
+                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-semibold uppercase cursor-pointer transition-all border ${
                       revitPriorityFilter === pr
                         ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                         : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -295,36 +295,36 @@ export default function BimTab({
                 <tr className="bg-slate-50/50 text-slate-400 uppercase font-mono text-[9px] border-b border-slate-100">
                   <th 
                     onClick={() => handleToggleSort('title')}
-                    className="p-2.5 px-3 border-r border-slate-100 font-bold cursor-pointer hover:bg-slate-100 select-none transition-colors"
+                    className="p-2.5 px-3 border-r border-slate-100 font-semibold cursor-pointer hover:bg-slate-100 select-none transition-colors"
                   >
                     O que adicionar no Template Revit {revitSortBy === 'title' && (revitSortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th 
                     onClick={() => handleToggleSort('architect')}
-                    className="p-2.5 px-3 border-r border-slate-100 font-bold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[150px]"
+                    className="p-2.5 px-3 border-r border-slate-100 font-semibold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[150px]"
                   >
                     Solicitante {revitSortBy === 'architect' && (revitSortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th 
                     onClick={() => handleToggleSort('dateAdded')}
-                    className="p-2.5 px-3 border-r border-slate-100 font-bold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[130px] text-center"
+                    className="p-2.5 px-3 border-r border-slate-100 font-semibold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[130px] text-center"
                   >
                     Data Adição {revitSortBy === 'dateAdded' && (revitSortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th 
                     onClick={() => handleToggleSort('priority')}
-                    className="p-2.5 px-3 border-r border-slate-100 font-bold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[120px] text-center"
+                    className="p-2.5 px-3 border-r border-slate-100 font-semibold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[120px] text-center"
                   >
                     Prioridade {revitSortBy === 'priority' && (revitSortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th 
                     onClick={() => handleToggleSort('status')}
-                    className="p-2.5 px-3 border-r border-slate-100 font-bold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[140px] text-center"
+                    className="p-2.5 px-3 border-r border-slate-100 font-semibold cursor-pointer hover:bg-slate-100 select-none transition-colors w-[140px] text-center"
                   >
                     Estado {revitSortBy === 'status' && (revitSortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Observações / Detalhes Adicionais</th>
-                  <th className="p-2.5 px-3 text-center font-bold w-12">Remover</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Observações / Detalhes Adicionais</th>
+                  <th className="p-2.5 px-3 text-center font-semibold w-12">Remover</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[11px]">
@@ -369,7 +369,7 @@ export default function BimTab({
                         <select
                           value={req.priority}
                           onChange={e => handleUpdateRevitReq(req.id, { priority: e.target.value as any })}
-                          className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-bold w-full text-center focus:outline-none ${
+                          className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-semibold w-full text-center focus:outline-none ${
                             req.priority === 'Alta' 
                               ? 'bg-slate-900 text-white border-slate-900' 
                               : req.priority === 'Média'
@@ -388,7 +388,7 @@ export default function BimTab({
                         <select
                           value={req.status}
                           onChange={e => handleUpdateRevitReq(req.id, { status: e.target.value as any })}
-                          className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-bold w-full text-center focus:outline-none ${
+                          className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-semibold w-full text-center focus:outline-none ${
                             req.status === 'Implementado'
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : req.status === 'Em Estudo'

@@ -95,7 +95,7 @@ export default function BackupsTab({
       <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
-            <h2 className="font-bold text-sm text-slate-800">
+            <h2 className="font-semibold text-sm text-slate-800">
               Registro de Backup
             </h2>
             <p className="text-xs text-slate-400 mt-1">Selecione o ano e a semana para verificar ou adicionar logs de backup.</p>
@@ -108,11 +108,8 @@ export default function BackupsTab({
               <select
                 value={backupSelectedYear}
                 onChange={e => setBackupSelectedYear(parseInt(e.target.value, 10))}
-                className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-xs font-bold focus:outline-none hover:bg-slate-100 cursor-pointer text-slate-700"
+                className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-xs font-semibold focus:outline-none hover:bg-slate-100 cursor-pointer text-slate-700"
               >
-                <option value={2023}>2023</option>
-                <option value={2024}>2024</option>
-                <option value={2025}>2025</option>
                 <option value={2026}>2026</option>
                 <option value={2027}>2027</option>
               </select>
@@ -123,7 +120,7 @@ export default function BackupsTab({
               <select
                 value={backupSelectedWeekId}
                 onChange={e => setBackupSelectedWeekId(e.target.value)}
-                className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-xs font-bold focus:outline-none hover:bg-slate-100 cursor-pointer text-slate-700 max-w-[200px]"
+                className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-xs font-semibold focus:outline-none hover:bg-slate-100 cursor-pointer text-slate-700 max-w-[200px]"
               >
                 {backupWeeks.map(w => (
                   <option key={w.id} value={w.id}>
@@ -136,7 +133,7 @@ export default function BackupsTab({
             <button
               type="button"
               onClick={handleAddBackupRecord}
-              className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+              className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" /> Adicionar Registro
             </button>
@@ -146,7 +143,7 @@ export default function BackupsTab({
         {/* Info header strip */}
         {activeWeek && (
           <div className="bg-[#ECA172]/10 border-l-4 border-[#ECA172] text-slate-800 font-semibold p-3 px-4 text-left rounded-r-xl text-xs flex items-center justify-between select-none">
-            <span className="font-bold uppercase tracking-wider text-[#D77436]">
+            <span className="font-semibold uppercase tracking-wider text-[#D77436]">
               Semana de {activeWeekStartDateFormatted}
             </span>
             <span className="text-[10px] font-mono text-slate-400">
@@ -164,13 +161,13 @@ export default function BackupsTab({
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-slate-50/50 text-slate-400 uppercase font-mono text-[9px] border-b border-slate-100">
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Projeto / Origem</th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Fase</th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Progresso</th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Backup</th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Técnico</th>
-                  <th className="p-2.5 px-3 border-r border-slate-100 font-bold">Descrição do Evento & Link Workspace</th>
-                  <th className="p-2.5 px-3 text-center font-bold">Ações</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Projeto / Origem</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Fase</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Progresso</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Backup</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Técnico</th>
+                  <th className="p-2.5 px-3 border-r border-slate-100 font-semibold">Descrição do Evento & Link Workspace</th>
+                  <th className="p-2.5 px-3 text-center font-semibold">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[11px] text-slate-700">
@@ -185,7 +182,7 @@ export default function BackupsTab({
                         type="text"
                         value={rec.project}
                         onChange={e => handleUpdateRecord(rec.id, { project: e.target.value })}
-                        className="w-full bg-transparent border-none p-1 font-bold text-slate-800 focus:bg-slate-50 focus:ring-0 text-[11px] rounded focus:outline-none"
+                        className="w-full bg-transparent border-none p-1 font-semibold text-slate-800 focus:bg-slate-50 focus:ring-0 text-[11px] rounded focus:outline-none"
                         placeholder="Nome do Projeto"
                       />
                     </td>
@@ -231,7 +228,7 @@ export default function BackupsTab({
                           handleUpdateRecord(rec.id, { status: val });
                           triggerToast(`Backup de ${rec.project} marcado como ${val}!`, 'info');
                         }}
-                        className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-bold w-full text-center focus:outline-none ${
+                        className={`p-1 px-2 rounded text-[10px] border focus:ring-0 cursor-pointer font-semibold w-full text-center focus:outline-none ${
                           rec.status === 'Realizado' 
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                             : 'bg-rose-50 text-rose-700 border-rose-200'
@@ -276,7 +273,7 @@ export default function BackupsTab({
                             type="text"
                             value={rec.link || ''}
                             onChange={e => handleUpdateRecord(rec.id, { link: e.target.value })}
-                            className="flex-1 bg-transparent border-none p-0 text-indigo-600 focus:bg-slate-50 focus:ring-0 text-[10px] rounded placeholder:text-slate-350 focus:outline-none placeholder:italic"
+                            className="flex-1 bg-transparent border-none p-0 text-slate-600 focus:bg-slate-50 focus:ring-0 text-[10px] rounded placeholder:text-slate-350 focus:outline-none placeholder:italic"
                             placeholder="Link Google Drive (opcional)"
                           />
                           {rec.link && (
@@ -284,7 +281,7 @@ export default function BackupsTab({
                               href={rec.link} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-[10px] text-indigo-600 underline font-bold hover:text-indigo-800 whitespace-nowrap"
+                              className="text-[10px] text-slate-600 underline font-semibold hover:text-black whitespace-nowrap"
                             >
                               Abrir ↗
                             </a>
@@ -318,7 +315,7 @@ export default function BackupsTab({
           <Database className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider font-sans">
+          <h4 className="font-semibold text-xs text-slate-800 uppercase tracking-wider font-sans">
             Integração de Sincronização Automática (Futuro Módulo)
           </h4>
           <p className="text-[11px] text-slate-400 font-sans leading-relaxed">

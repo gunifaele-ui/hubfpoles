@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronRight, Menu, X, Plus, Copy, Clipboard, 
   CheckCircle2, AlertTriangle, Eye, EyeOff, Play, RefreshCw, Trash2, ShieldCheck, ArrowRight,
   Highlighter, ChevronDown, Search, Mail, Settings, Shield, User, Briefcase, Smartphone,
-  Handshake, LogOut
+  Handshake, LogOut, Loader2, BarChart3
 } from 'lucide-react';
 import { 
   Architect, Task, Project, Complementar, Tablet, Placa, Clash, 
@@ -22,6 +22,8 @@ import { GeminiAssistant } from './components/GeminiAssistant';
 
 // Tab Submodules
 import DashboardTab from './components/tabs/DashboardTab';
+import PartnersTab from './components/tabs/PartnersTab';
+import ExecutiveTab from './components/tabs/ExecutiveTab';
 import CronogramaTab from './components/tabs/CronogramaTab';
 import ResponsaveisTab from './components/tabs/ResponsaveisTab';
 import ProjetosTab from './components/tabs/ProjetosTab';
@@ -128,6 +130,7 @@ export default function App() {
   const handleLoginSubmit = () => {
     if (passwordInput === '246810') {
       setIsUnlocking(true);
+      setActiveTab('dashboard');
       setTimeout(() => {
         sessionStorage.setItem('fpoles_auth', 'true');
         setIsAuthenticated(true);
@@ -266,11 +269,23 @@ export default function App() {
   useEffect(() => { localStorage.setItem('fpoles_revit_requirements', JSON.stringify(revitRequirements)); }, [revitRequirements]);
 
   // --- UI STATE ---
-  const [activeTab, setActiveTab] = useState<string>('cronograma');
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const saved = sessionStorage.getItem('fpoles_active_tab');
+    return saved || 'dashboard';
+  });
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [selectedArchitectId, setSelectedArchitectId] = useState<string>('todos');
+  const defaultArchitectId = useMemo(() => {
+    const sorted = [...ARCHITECTS].sort((a, b) => a.name.localeCompare(b.name));
+    return sorted[0]?.id || 'pedro';
+  }, []);
+
+  const [selectedArchitectId, setSelectedArchitectId] = useState<string>(defaultArchitectId);
   const [clipboardBuffer, setClipboardBuffer] = useState<Task | null>(null);
+
+  useEffect(() => {
+    sessionStorage.setItem('fpoles_active_tab', activeTab);
+  }, [activeTab]);
 
   const [userRole, setUserRole] = useState<'admin' | 'arquiteto' | 'estagiario'>(() => {
     const saved = localStorage.getItem('fpoles_user_role');
@@ -286,7 +301,7 @@ export default function App() {
 
   // Handle automatic redirect if Estagiário ends up on restricted tabs
   useEffect(() => {
-    if (userRole === 'estagiario' && (activeTab === 'senhas' || activeTab === 'licencas' || activeTab === 'backups')) {
+    if (userRole === 'estagiario' && (activeTab === 'senhas' || activeTab === 'licencas' || activeTab === 'backups' || activeTab === 'executive')) {
       setActiveTab('dashboard');
       triggerToast('Acesso restrito para Estagiários. Redirecionado ao Dashboard.', 'warning');
     }
@@ -429,14 +444,30 @@ export default function App() {
       triggerToast('Área de Transferência vazia! Copie uma tarefa primeiro.', 'warning');
       return;
     }
-    const newTask: Task = {
-      ...clipboardBuffer,
-      id: 't-' + Date.now(),
-      date,
-      archId,
-      status: 'Pendente'
-    };
-    setTasks(prev => [...prev, newTask]);
+    setTasks(prev => {
+      const exists = prev.some(t => t.archId === archId && t.date === date);
+      if (exists) {
+        return prev.map(t => (t.archId === archId && t.date === date)
+          ? {
+              ...t,
+              title: clipboardBuffer.title,
+              project: clipboardBuffer.project,
+              isYellow: clipboardBuffer.isYellow || false,
+              status: clipboardBuffer.status || 'Pendente',
+              priority: clipboardBuffer.priority || 'Média'
+            }
+          : t
+        );
+      } else {
+        const newTask: Task = {
+          ...clipboardBuffer,
+          id: 't-' + Date.now() + Math.random().toString(36).substr(2, 4),
+          date,
+          archId,
+        };
+        return [...prev, newTask];
+      }
+    });
     triggerToast('Tarefa colada com sucesso!');
   };
 
@@ -517,11 +548,12 @@ export default function App() {
   // --- NAVIGATION LIST (NO NUMBERS, SPECIFIC ORDER) ---
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    ...(userRole !== 'estagiario' ? [{ id: 'executive', label: 'Painel Executivo', icon: BarChart3 }] : []),
     { id: 'cronograma', label: 'Cronograma', icon: Calendar },
     { id: 'responsaveis', label: 'Responsáveis por Projeto', icon: Users },
     { id: 'complementares', label: 'Projetos Complementares', icon: FileCode },
     { id: 'client_area', label: 'Área do Cliente', icon: User, comingSoon: true },
-    { id: 'partners', label: 'Fornecedores e Parceiros', icon: Handshake, comingSoon: true },
+    { id: 'partners', label: 'Fornecedores e Parceiros', icon: Handshake },
     { id: 'backups', label: 'Backup Semanal', icon: Database, restricted: true },
     { id: 'licencas', label: 'Controle de Licenças', icon: ShieldCheck, restricted: true },
     { id: 'senhas', label: 'Senhas', icon: Lock, restricted: true },
@@ -531,7 +563,9 @@ export default function App() {
   ];
 
   return (
-    <div className="flex h-screen bg-white overflow-hidden font-sans text-sm text-black">
+    <div className={`flex h-screen overflow-hidden font-sans text-sm text-black transition-colors duration-200 ${
+      isAuthenticated ? 'bg-slate-50' : 'bg-[#060607]'
+    }`}>
       
       {/* --- PREMIUM TOASTS (MONOCHROME CAPULES) --- */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
@@ -546,13 +580,15 @@ export default function App() {
         ))}
       </div>
 
-      {/* --- SIDEBAR MENU (RETRACTABLE, MONOCHROME SLATE) --- */}
-      <aside 
-        id="sidebar"
-        className={`hidden md:flex flex-col bg-slate-950 text-white transition-all duration-300 shrink-0 ${
-          sidebarCollapsed ? 'w-20' : 'w-72'
-        }`}
-      >
+      {(isAuthenticated || isUnlocking) && (
+        <>
+          {/* --- SIDEBAR MENU (RETRACTABLE, MONOCHROME SLATE) --- */}
+          <aside 
+            id="sidebar"
+            className={`hidden md:flex flex-col bg-black text-white transition-all duration-300 shrink-0 ${
+              sidebarCollapsed ? 'w-20' : 'w-72'
+            }`}
+          >
         {/* Brand */}
         <div className="p-6 flex flex-col gap-2 border-b border-white/5">
           <div className="flex items-center justify-between gap-2">
@@ -563,10 +599,10 @@ export default function App() {
                 </div>
                 <div className="flex items-center justify-between mt-2">
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-300 leading-tight">
+                    <span className="text-[11px] font-semibold text-slate-300 leading-tight">
                       {userRole === 'admin' ? 'Filipe Poles' : userRole === 'arquiteto' ? 'Amanda Melo' : 'Thiago Souza'}
                     </span>
-                    <span className="text-[9px] text-slate-500 tracking-wider font-mono uppercase mt-0.5 font-bold">
+                    <span className="text-[9px] text-slate-500 tracking-wider font-sans uppercase mt-0.5 font-semibold">
                       {userRole === 'admin' ? 'Administrador' : userRole === 'arquiteto' ? 'Arquiteto' : 'Estagiário'}
                     </span>
                   </div>
@@ -629,7 +665,7 @@ export default function App() {
                       ? 'text-slate-600 hover:text-slate-500 cursor-not-allowed opacity-50'
                       : isActive 
                         ? 'bg-white text-slate-950 shadow-md' 
-                        : 'text-slate-400 hover:bg-slate-900/60 hover:text-white cursor-pointer'
+                        : 'text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer'
                 }`}
                 title={isComingSoon ? 'Em breve' : isLocked ? `Acesso restrito a Administradores/Arquitetos` : item.label}
               >
@@ -639,7 +675,7 @@ export default function App() {
                 </div>
                 {!sidebarCollapsed && (
                   isComingSoon ? (
-                    <span className="text-[8px] bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-mono uppercase font-bold shrink-0">
+                    <span className="text-[8px] bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-sans uppercase font-semibold shrink-0">
                       Em breve
                     </span>
                   ) : isLocked ? (
@@ -656,7 +692,7 @@ export default function App() {
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         
         {/* Mobile Header (hidden on desktop) */}
-        <header className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between">
+        <header className="md:hidden bg-black text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={fpolesLogo} alt="Fpoles Architects" className="h-6 object-contain" />
             <div className="flex items-center gap-1">
@@ -672,7 +708,7 @@ export default function App() {
               >
                 <Settings className="w-3.5 h-3.5" />
               </button>
-              <span className="text-[8px] bg-white/10 px-1.5 py-0.5 rounded font-mono text-slate-300 uppercase">
+              <span className="text-[8px] bg-white/10 px-1.5 py-0.5 rounded font-sans text-slate-300 uppercase font-semibold">
                 {userRole === 'admin' ? 'ADM' : userRole === 'arquiteto' ? 'ARQ' : 'EST'}
               </span>
             </div>
@@ -688,7 +724,7 @@ export default function App() {
 
         {/* Mobile Nav Links (hidden on desktop) */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-900 border-b border-white/5 px-4 py-4 space-y-1">
+          <div className="md:hidden bg-black border-b border-white/5 px-4 py-4 space-y-1">
             {navItems.map(item => {
               const Icon = item.icon;
               const isLocked = userRole === 'estagiario' && item.restricted;
@@ -714,7 +750,7 @@ export default function App() {
                         ? 'text-slate-600 cursor-not-allowed opacity-55'
                         : isActive 
                           ? 'bg-white text-slate-950' 
-                          : 'text-slate-400 hover:bg-slate-850 hover:text-white'
+                          : 'text-slate-400 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -722,7 +758,7 @@ export default function App() {
                     <span>{item.label}</span>
                   </div>
                   {isComingSoon ? (
-                    <span className="text-[8px] bg-slate-850 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-mono uppercase font-bold shrink-0">
+                    <span className="text-[8px] bg-slate-850 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-sans uppercase font-semibold shrink-0">
                       Em breve
                     </span>
                   ) : isLocked ? (
@@ -820,14 +856,15 @@ export default function App() {
           />
         </main>
       </div>
+      </>)}
 
       {/* Role Selection Modal */}
       {roleModalOpen && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div className="bg-slate-900 text-white px-5 py-4 flex justify-between items-center">
-              <h3 className="font-bold text-sm md:text-base flex items-center gap-2">
-                <Shield className="w-4 h-4 text-indigo-400" />
+              <h3 className="font-semibold text-sm md:text-base flex items-center gap-2">
+                <Shield className="w-4 h-4 text-slate-400" />
                 <span>Simular Perfil de Acesso</span>
               </h3>
               <button 
@@ -859,13 +896,13 @@ export default function App() {
                   }}
                   className={`w-full text-left p-3.5 rounded-xl border transition flex items-start gap-3 cursor-pointer ${
                     userRole === 'admin'
-                      ? 'border-indigo-600 bg-indigo-50/20'
+                      ? 'border-black bg-black/5'
                       : 'border-slate-200 hover:bg-slate-50'
                   }`}
                 >
-                  <User className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                  <User className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
                   <div className="w-full">
-                    <span className="font-bold text-slate-800 text-xs uppercase block">Administrador</span>
+                    <span className="font-semibold text-slate-800 text-xs uppercase block">Administrador</span>
                     <span className="text-[10px] text-slate-500 mt-1 block leading-normal">
                       Acesso irrestrito a todas as abas. Permissão total para editar, cadastrar e excluir dados (incluindo senhas e licenças).
                     </span>
@@ -881,7 +918,7 @@ export default function App() {
                           }}
                           onClick={(e) => e.stopPropagation()}
                           className={`w-full bg-slate-50 border rounded-lg px-2.5 py-1.5 text-xs outline-none focus:bg-white ${
-                            passwordError ? 'border-rose-500 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
+                            passwordError ? 'border-rose-500 focus:border-rose-500' : 'border-slate-200 focus:border-black'
                           }`}
                         />
                         <span className="text-[9px] text-slate-400 mt-1 block">Dica: digite a palavra-chave admin</span>
@@ -900,13 +937,13 @@ export default function App() {
                   }}
                   className={`w-full text-left p-3.5 rounded-xl border transition flex items-start gap-3 cursor-pointer ${
                     userRole === 'arquiteto'
-                      ? 'border-indigo-600 bg-indigo-50/20'
+                      ? 'border-black bg-black/5'
                       : 'border-slate-200 hover:bg-slate-50'
                   }`}
                 >
-                  <Briefcase className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                  <Briefcase className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-slate-800 text-xs uppercase block">Arquiteto</span>
+                    <span className="font-semibold text-slate-800 text-xs uppercase block">Arquiteto</span>
                     <span className="text-[10px] text-slate-500 mt-1 block leading-normal">
                       Acesso a todas as abas e edição completa, mas **bloqueado para apagar** senhas corporativas e licenças de software.
                     </span>
@@ -923,13 +960,13 @@ export default function App() {
                   }}
                   className={`w-full text-left p-3.5 rounded-xl border transition flex items-start gap-3 cursor-pointer ${
                     userRole === 'estagiario'
-                      ? 'border-indigo-600 bg-indigo-50/20'
+                      ? 'border-black bg-black/5'
                       : 'border-slate-200 hover:bg-slate-50'
                   }`}
                 >
-                  <Smartphone className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                  <Smartphone className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-slate-800 text-xs uppercase block">Estagiário</span>
+                    <span className="font-semibold text-slate-800 text-xs uppercase block">Estagiário</span>
                     <span className="text-[10px] text-slate-500 mt-1 block leading-normal">
                       Visualização básica. **Bloqueado** para apagar itens, e **oculta totalmente** as abas de Senhas, Licenças e Backups semanais.
                     </span>
@@ -938,8 +975,7 @@ export default function App() {
               </div>
 
               {/* Log Out Button */}
-              <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
-                <span className="text-[10px] text-slate-400 font-mono">Sessão: Ativa</span>
+              <div className="pt-4 border-t border-slate-100 flex justify-end items-center">
                 <button
                   type="button"
                   onClick={() => {
@@ -950,7 +986,7 @@ export default function App() {
                     setRoleModalOpen(false);
                     triggerToast('Sessão encerrada com sucesso!', 'info');
                   }}
-                  className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-150 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-150 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sair do Hub</span>
@@ -992,9 +1028,7 @@ export default function App() {
           {/* Center login panel with glowing light beam */}
           <div className="flex-1 flex flex-col items-center justify-center relative p-6 bg-[#060607]">
             {/* Spotlight blur */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-gradient-to-b from-indigo-500/10 to-transparent blur-[100px] rounded-full pointer-events-none"></div>
-            {/* Vertical light beam */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-[200px] bg-gradient-to-b from-white/25 via-white/5 to-transparent pointer-events-none"></div>
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-gradient-to-b from-slate-500/10 to-transparent blur-[100px] rounded-full pointer-events-none"></div>
 
             <div className={`max-w-xs w-full flex flex-col items-center text-center space-y-6 z-10 transition-all duration-500 ${
               isUnlocking ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100'
@@ -1003,7 +1037,7 @@ export default function App() {
               <img src={fpolesLogo} alt="Fpoles Architects" className="h-8 object-contain mb-2 select-none" />
 
               <div>
-                <h2 className="text-xs font-bold uppercase tracking-wider font-sans text-white">Bem vindo ao Hub Fpoles</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-wider font-sans text-white">Bem vindo ao Hub Fpoles</h2>
                 <p className="text-[11px] text-slate-400 mt-1.5 font-medium leading-relaxed">Digite a senha para continuar</p>
               </div>
 
@@ -1026,7 +1060,7 @@ export default function App() {
                   autoFocus
                 />
                 {loginError && (
-                  <span className="text-[10px] text-red-500 font-bold block animate-pulse">Senha incorreta. Tente novamente.</span>
+                  <span className="text-[10px] text-red-500 font-semibold block animate-pulse">Senha incorreta. Tente novamente.</span>
                 )}
               </div>
 
@@ -1034,7 +1068,7 @@ export default function App() {
               <button 
                 type="button"
                 onClick={handleLoginSubmit}
-                className="w-full bg-white hover:bg-neutral-100 text-black font-bold p-3 rounded-xl text-xs transition-all shadow-lg active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-white hover:bg-neutral-100 text-black font-semibold p-3 rounded-xl text-xs transition-all shadow-lg active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isUnlocking ? (
                   <Loader2 className="w-4 h-4 animate-spin text-black" />
@@ -1147,7 +1181,7 @@ function WorkspaceContent(props: WorkspaceContentProps) {
           setActiveTab={props.setActiveTab}
           complementares={props.complementares}
           licenses={props.licenses}
-          tablets={props.tablets}
+          projects={props.projects}
         />
       );
     case 'cronograma':
@@ -1192,6 +1226,19 @@ function WorkspaceContent(props: WorkspaceContentProps) {
           triggerToast={props.triggerToast}
         />
       );
+    case 'executive':
+      return (
+        <ExecutiveTab
+          userRole={props.userRole}
+          tasks={props.tasks}
+          projects={props.projects}
+          complementaresProjects={props.complementaresProjects}
+          clashes={props.clashes}
+          licenses={props.licenses}
+          weekHojeId={props.weekHojeId}
+          weeks={props.weeks}
+        />
+      );
     case 'complementares':
       return (
         <ComplementaresModule
@@ -1199,6 +1246,13 @@ function WorkspaceContent(props: WorkspaceContentProps) {
           setComplementaresProjects={props.setComplementaresProjects}
           triggerToast={props.triggerToast}
           userRole={props.userRole}
+        />
+      );
+    case 'partners':
+      return (
+        <PartnersTab
+          userRole={props.userRole}
+          triggerToast={props.triggerToast}
         />
       );
     case 'bim':
@@ -1213,11 +1267,8 @@ function WorkspaceContent(props: WorkspaceContentProps) {
     case 'logistica':
       return (
         <LogisticaTab
-          tablets={props.tablets}
-          setTablets={props.setTablets}
-          placas={props.placas}
-          setPlacas={props.setPlacas}
           projects={props.projects}
+          setProjects={props.setProjects}
           triggerToast={props.triggerToast}
         />
       );
@@ -1256,7 +1307,7 @@ function WorkspaceContent(props: WorkspaceContentProps) {
       );
     default:
       return (
-        <div className="flex items-center justify-center h-full text-slate-500 font-bold">
+        <div className="flex items-center justify-center h-full text-slate-500 font-semibold">
           Aba não implementada ou em desenvolvimento
         </div>
       );

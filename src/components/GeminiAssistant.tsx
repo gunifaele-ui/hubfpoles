@@ -215,21 +215,21 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
       // Headers
       if (line.startsWith("### ")) {
         return (
-          <h4 key={idx} className="text-xs font-bold font-display text-black mt-3 mb-1 uppercase tracking-tight">
+          <h4 key={idx} className="text-xs font-semibold font-display text-black mt-3 mb-1 uppercase tracking-tight">
             {line.slice(4)}
           </h4>
         );
       }
       if (line.startsWith("## ")) {
         return (
-          <h3 key={idx} className="text-xs font-bold font-display text-black mt-4 mb-1.5 uppercase tracking-wide border-b border-black/10 pb-1">
+          <h3 key={idx} className="text-xs font-semibold font-display text-black mt-4 mb-1.5 uppercase tracking-wide border-b border-black/10 pb-1">
             {line.slice(3)}
           </h3>
         );
       }
       if (line.startsWith("# ")) {
         return (
-          <h2 key={idx} className="text-sm font-bold font-display text-black mt-4 mb-2 uppercase tracking-widest">
+          <h2 key={idx} className="text-sm font-semibold font-display text-black mt-4 mb-2 uppercase tracking-widest">
             {line.slice(2)}
           </h2>
         );
@@ -290,7 +290,7 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
     return parts.map((part, i) => {
       if (i % 2 === 1) {
         return (
-          <strong key={i} className="font-bold text-black bg-black/[0.03] px-1 rounded">
+          <strong key={i} className="font-semibold text-black bg-black/[0.03] px-1 rounded">
             {part}
           </strong>
         );
@@ -312,10 +312,10 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-xs font-bold font-display text-black uppercase tracking-wider">
+                  <h3 className="text-xs font-semibold font-display text-black uppercase tracking-wider">
                     Fpoles AI Assistente
                   </h3>
-                  <span className="bg-black text-[8px] text-white px-1.5 py-0.5 rounded-full font-mono uppercase font-bold tracking-tight">
+                  <span className="bg-black text-[8px] text-white px-1.5 py-0.5 rounded-full font-mono uppercase font-semibold tracking-tight">
                     Gemini 3.5
                   </span>
                 </div>
@@ -405,7 +405,7 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
               <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-start gap-2.5 text-xs">
                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold">Falha no Assistente</p>
+                  <p className="font-semibold">Falha no Assistente</p>
                   <p className="text-[11px] leading-tight">{error}</p>
                 </div>
               </div>
@@ -467,7 +467,7 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({
           <Sparkles className="w-5 h-5 animate-pulse" />
         )}
         {!isOpen && (
-          <span className="absolute right-16 bg-black text-white text-[10px] uppercase font-mono font-bold tracking-wider py-1 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow border border-white/20 pointer-events-none">
+          <span className="absolute right-16 bg-black text-white text-[10px] uppercase font-mono font-semibold tracking-wider py-1 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow border border-white/20 pointer-events-none">
             Perguntar ao Fpoles AI
           </span>
         )}

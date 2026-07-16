@@ -25,7 +25,7 @@ export default function ProjetosTab({
   if (userRole !== 'admin') {
     return (
       <div className="p-8 text-center bg-red-50 text-red-700 border border-red-200 rounded-2xl">
-        <h3 className="font-bold text-sm">Acesso Restrito</h3>
+        <h3 className="font-semibold text-sm">Acesso Restrito</h3>
         <p className="text-xs mt-1">Apenas administradores podem gerenciar o cadastro direto de novos projetos.</p>
       </div>
     );
@@ -96,7 +96,7 @@ export default function ProjetosTab({
       {/* Main Title Header */}
       <div className="p-6 bg-slate-900 text-white rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-base font-bold uppercase tracking-tight font-sans">Cadastro de Projetos</h2>
+          <h2 className="text-base font-semibold uppercase tracking-tight font-sans">Cadastro de Projetos</h2>
           <p className="text-xs text-slate-300">Módulo exclusivo do Administrador para criar, editar códigos e gerenciar o catálogo global de projetos.</p>
         </div>
         <button
@@ -107,7 +107,7 @@ export default function ProjetosTab({
             }
             setShowAddProject(!showAddProject);
           }}
-          className="px-4 py-2.5 bg-white text-slate-900 hover:bg-slate-50 font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer transition-all self-start md:self-auto shadow-sm"
+          className="px-4 py-2.5 bg-white text-slate-900 hover:bg-slate-50 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer transition-all self-start md:self-auto shadow-sm"
         >
           <Plus className="w-4 h-4" />
           {showAddProject ? 'Fechar Cadastro' : 'Cadastrar Novo Projeto'}
@@ -117,11 +117,11 @@ export default function ProjetosTab({
       {/* Add Project Sliding Form */}
       {showAddProject && (
         <form onSubmit={handleCreateProject} className="p-6 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-4 animate-fade-in">
-          <h3 className="font-bold text-xs uppercase tracking-wider font-sans text-slate-800">Cadastrar Novo Projeto</h3>
+          <h3 className="font-semibold text-xs uppercase tracking-wider font-sans text-slate-800">Cadastrar Novo Projeto</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[10px] font-bold font-mono uppercase text-slate-500 mb-1">Código do Projeto (ex: YYYY-XXX)</label>
+              <label className="block text-[10px] font-semibold font-mono uppercase text-slate-500 mb-1">Código do Projeto (ex: YYYY-XXX)</label>
               <input
                 type="text"
                 value={newProjCode}
@@ -133,7 +133,7 @@ export default function ProjetosTab({
               <span className="text-[9px] text-slate-400 mt-1 block">Escreva no padrão de ano e série: YYYY-XXX</span>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-[10px] font-bold font-mono uppercase text-slate-500 mb-1">Nome do Projeto</label>
+              <label className="block text-[10px] font-semibold font-mono uppercase text-slate-500 mb-1">Nome do Projeto</label>
               <input
                 type="text"
                 value={newProjName}
@@ -147,7 +147,7 @@ export default function ProjetosTab({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold font-mono uppercase text-slate-500 mb-1">Responsável Inicial</label>
+              <label className="block text-[10px] font-semibold font-mono uppercase text-slate-500 mb-1">Responsável Inicial</label>
               <select
                 value={newProjGestor}
                 onChange={(e) => setNewProjGestor(e.target.value)}
@@ -160,7 +160,7 @@ export default function ProjetosTab({
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-bold font-mono uppercase text-slate-500 mb-1">Responsabilidade Secundária Inicial</label>
+              <label className="block text-[10px] font-semibold font-mono uppercase text-slate-500 mb-1">Responsabilidade Secundária Inicial</label>
               <select
                 value={newProjProjetista}
                 onChange={(e) => setNewProjProjetista(e.target.value)}
@@ -178,13 +178,13 @@ export default function ProjetosTab({
             <button
               type="button"
               onClick={() => setShowAddProject(false)}
-              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 cursor-pointer shadow-sm transition-all"
+              className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 cursor-pointer shadow-sm transition-all"
             >
               Confirmar Cadastro
             </button>
@@ -195,8 +195,8 @@ export default function ProjetosTab({
       {/* Project List / Table */}
       <div className="bg-white rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-100 bg-slate-50/10 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <h3 className="font-bold text-xs uppercase tracking-wider font-sans text-slate-800">Catálogo Completo de Projetos Cadastrados</h3>
-          <span className="text-[10px] font-mono text-slate-500 font-bold bg-white px-2.5 py-1 rounded-full border border-slate-200/60">
+          <h3 className="font-semibold text-xs uppercase tracking-wider font-sans text-slate-800">Catálogo Completo de Projetos Cadastrados</h3>
+          <span className="text-[10px] font-mono text-slate-500 font-semibold bg-white px-2.5 py-1 rounded-full border border-slate-200/60">
             Total: {projects.length} projetos
           </span>
         </div>
@@ -232,7 +232,7 @@ export default function ProjetosTab({
                           const updated = projects.map(p => p.id === proj.id ? { ...p, code: e.target.value } : p);
                           setProjects(updated);
                         }}
-                        className="bg-transparent border-none focus:bg-slate-50 p-1 rounded font-mono font-bold w-full text-center focus:outline-none uppercase text-xs text-slate-700"
+                        className="bg-transparent border-none focus:bg-slate-50 p-1 rounded font-mono font-semibold w-full text-center focus:outline-none uppercase text-xs text-slate-700"
                       />
                     </td>
 
@@ -245,7 +245,7 @@ export default function ProjetosTab({
                           const updated = projects.map(p => p.id === proj.id ? { ...p, name: e.target.value } : p);
                           setProjects(updated);
                         }}
-                        className="bg-transparent border-none focus:bg-slate-50 p-1 rounded font-bold font-sans w-full text-xs focus:outline-none text-slate-800"
+                        className="bg-transparent border-none focus:bg-slate-50 p-1 rounded font-semibold font-sans w-full text-xs focus:outline-none text-slate-800"
                       />
                     </td>
 
@@ -258,7 +258,7 @@ export default function ProjetosTab({
                           setProjects(updated);
                           triggerToast(`Projeto "${proj.name}" definido como ${e.target.value}!`, 'info');
                         }}
-                        className={`p-1 rounded font-bold text-[9px] uppercase cursor-pointer border text-center ${
+                        className={`p-1 rounded font-semibold text-[9px] uppercase cursor-pointer border text-center ${
                           isStandby 
                             ? 'bg-amber-50 text-amber-700 border-amber-200' 
                             : proj.status === 'Pendente' 

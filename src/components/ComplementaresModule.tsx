@@ -12,7 +12,7 @@ const DISCIPLINAS_CONFIG = {
   estrutural: { nome: 'Estrutural', icon: 'fa-solid fa-cubes', bg: 'bg-blue-50', color: 'text-blue-600', border: 'border-blue-200' },
   hidraulica: { nome: 'Hidráulica', icon: 'fa-solid fa-droplet', bg: 'bg-cyan-50', color: 'text-cyan-600', border: 'border-cyan-200' },
   eletrica: { nome: 'Elétrica', icon: 'fa-solid fa-bolt', bg: 'bg-amber-50', color: 'text-amber-500', border: 'border-amber-200' },
-  automacao: { nome: 'Automação', icon: 'fa-solid fa-gears', bg: 'bg-purple-50', color: 'text-purple-600', border: 'border-purple-200' },
+  automacao: { nome: 'Automação', icon: 'fa-solid fa-gears', bg: 'bg-slate-50', color: 'text-slate-600', border: 'border-slate-200' },
   ar_condicionado: { nome: 'Ar Condicionado', icon: 'fa-solid fa-wind', bg: 'bg-teal-50', color: 'text-teal-600', border: 'border-teal-200' }
 };
 
@@ -151,17 +151,17 @@ export default function ComplementaresModule({
       return 'bg-slate-50 text-slate-300 border-slate-100 opacity-40';
     }
     if (disc.status === 'Compatibilizado') {
-      return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+      return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-semibold';
     }
     const badge = getDisciplineStatusBadge(disc);
     if (badge.label && badge.label.includes('Atrasado')) {
-      return 'bg-rose-500 text-white border-rose-650 font-bold animate-pulse';
+      return 'bg-rose-500 text-white border-rose-650 font-semibold animate-pulse';
     }
     if (badge.label === 'Na Arquitetura') {
-      return 'bg-slate-950 text-white border-black font-bold';
+      return 'bg-slate-950 text-white border-black font-semibold';
     }
     if (badge.label === 'No Projetista') {
-      return 'bg-amber-400 text-amber-950 border-amber-500 font-bold';
+      return 'bg-amber-400 text-amber-950 border-amber-500 font-semibold';
     }
     return 'bg-slate-100 text-slate-700 border-slate-200';
   };
@@ -169,7 +169,7 @@ export default function ComplementaresModule({
   const getDisciplineCardBorder = (disc: EngineeringDiscipline) => {
     const badge = getDisciplineStatusBadge(disc);
     if (badge.label.includes('Atrasado')) return 'border-rose-300 ring-1 ring-rose-50';
-    if (badge.label === 'Na Arquitetura') return 'border-indigo-300 ring-1 ring-indigo-50 bg-indigo-50/5';
+    if (badge.label === 'Na Arquitetura') return 'border-slate-350 ring-1 ring-slate-50 bg-slate-50/5';
     if (badge.label === 'No Projetista') return 'border-amber-200';
     if (badge.label === 'Aprovado') return 'border-emerald-200 bg-emerald-50/5';
     return 'border-slate-200';
@@ -685,7 +685,7 @@ export default function ComplementaresModule({
               setCurrentTab('dashboard');
               setFilters(prev => ({ ...prev, statusFilter: '', discipline: '' }));
             }}
-            className={`px-4 py-2 text-xs font-bold rounded-xl flex items-center gap-2 transition cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-2 transition cursor-pointer ${
               currentTab === 'dashboard' ? 'bg-[#1A1A1A] text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
             }`}
           >
@@ -695,7 +695,7 @@ export default function ComplementaresModule({
           
           <button 
             onClick={() => setCurrentTab('projetos')}
-            className={`px-4 py-2 text-xs font-bold rounded-xl flex items-center gap-2 transition cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-2 transition cursor-pointer ${
               currentTab === 'projetos' ? 'bg-[#1A1A1A] text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
             }`}
           >
@@ -707,7 +707,7 @@ export default function ComplementaresModule({
         {currentTab === 'projetos' && (
           <button 
             onClick={handleOpenNewProjectModal}
-            className="bg-[#1A1A1A] hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-2 transition cursor-pointer"
+            className="bg-[#1A1A1A] hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center gap-2 transition cursor-pointer"
           >
             <i className="fa-solid fa-plus text-[10px]"></i>
             <span>Cadastrar Projeto</span>
@@ -721,17 +721,17 @@ export default function ComplementaresModule({
           
           {/* PANORAMA GERAL CARDS */}
           <div>
-            <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Panorama Geral</h3>
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Panorama Geral</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Com Arquitetura */}
               <div 
                 onClick={() => filterByDashboardMetric('naArq')}
-                className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
+                className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-350 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
               >
                 <div>
                   <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Com Arquitetura</span>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-3xl font-bold text-black group-hover:scale-105 transition">{metrics.naArq}</span>
+                    <span className="text-3xl font-semibold text-black group-hover:scale-105 transition">{metrics.naArq}</span>
                     <span className="text-xs text-slate-500 font-medium">projetos na mesa</span>
                   </div>
                 </div>
@@ -748,7 +748,7 @@ export default function ComplementaresModule({
                 <div>
                   <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider block">Com Engenheiro</span>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-3xl font-bold text-amber-650 group-hover:scale-105 transition">{metrics.comProj}</span>
+                    <span className="text-3xl font-semibold text-amber-650 group-hover:scale-105 transition">{metrics.comProj}</span>
                     <span className="text-xs text-amber-655 font-medium font-semibold">aguardando retorno</span>
                   </div>
                 </div>
@@ -763,9 +763,9 @@ export default function ComplementaresModule({
                 className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-rose-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex items-center justify-between group"
               >
                 <div>
-                  <span class="text-xs font-semibold text-rose-600 uppercase tracking-wider block font-bold">Prazos Estourados</span>
+                  <span class="text-xs font-semibold text-rose-600 uppercase tracking-wider block font-semibold">Prazos Estourados</span>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-3xl font-bold text-rose-600 group-hover:scale-105 transition">{metrics.atrasados}</span>
+                    <span className="text-3xl font-semibold text-rose-600 group-hover:scale-105 transition">{metrics.atrasados}</span>
                     <span className="text-xs text-rose-650 font-medium font-semibold">revisões em atraso</span>
                   </div>
                 </div>
@@ -778,13 +778,13 @@ export default function ComplementaresModule({
 
           {/* GARGALOS POR ESPECIALIDADE */}
           <div>
-            <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Gargalos Pendentes por Especialidade</h3>
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Gargalos Pendentes por Especialidade</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
               {Object.entries(DISCIPLINAS_CONFIG).map(([key, config]) => (
                 <div 
                   key={key}
                   onClick={() => filterByDisciplineOnTab(key)}
-                  className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-indigo-300 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex flex-col justify-between relative overflow-hidden group"
+                  className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-slate-350 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 flex flex-col justify-between relative overflow-hidden group"
                 >
                   <div className="absolute top-0 left-0 right-0 h-1 bg-slate-100"></div>
                   
@@ -792,11 +792,11 @@ export default function ComplementaresModule({
                     <span className={`p-2 rounded-xl text-sm ${config.bg} ${config.color}`}>
                       <i className={`${config.icon} text-base`}></i>
                     </span>
-                    <span className="text-xs font-bold text-slate-700 group-hover:text-black transition">{config.nome}</span>
+                    <span className="text-xs font-semibold text-slate-700 group-hover:text-black transition">{config.nome}</span>
                   </div>
 
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-2xl font-bold text-slate-900">{getPendingCountByDiscipline(key)}</span>
+                    <span className="text-2xl font-semibold text-slate-900">{getPendingCountByDiscipline(key)}</span>
                     <span className="text-[10px] text-slate-400 font-semibold uppercase">Pendentes</span>
                   </div>
                 </div>
@@ -807,7 +807,7 @@ export default function ComplementaresModule({
           {/* QUADRO DE ATENÇÃO CRÍTICA */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-900 flex items-center gap-2 text-sm">
+              <h3 className="font-semibold text-slate-900 flex items-center gap-2 text-sm">
                 <i className="fa-solid fa-triangle-exclamation text-amber-500"></i>
                 Atenção Crítica (Atrasos da Arquitetura)
               </h3>
@@ -817,7 +817,7 @@ export default function ComplementaresModule({
               {criticalDelays.map(item => (
                 <div key={`${item.projectId}-${item.discKey}`} className="py-3 flex justify-between items-center text-xs">
                   <div>
-                    <span className="font-bold text-slate-800">{item.projectName}</span>
+                    <span className="font-semibold text-slate-800">{item.projectName}</span>
                     <div className="flex gap-2 mt-1 items-center">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${DISCIPLINAS_CONFIG[item.discKey as keyof typeof DISCIPLINAS_CONFIG].bg} ${DISCIPLINAS_CONFIG[item.discKey as keyof typeof DISCIPLINAS_CONFIG].color}`}>
                         {DISCIPLINAS_CONFIG[item.discKey as keyof typeof DISCIPLINAS_CONFIG].nome}
@@ -826,7 +826,7 @@ export default function ComplementaresModule({
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-rose-600 font-bold block">Atrasado há {item.daysDelayed} dias úteis</span>
+                    <span className="text-rose-600 font-semibold block">Atrasado há {item.daysDelayed} dias úteis</span>
                     <span className="text-[10px] text-slate-400">Prazo era: {formatDate(item.limite)}</span>
                   </div>
                 </div>
@@ -856,7 +856,7 @@ export default function ComplementaresModule({
               <div className="flex bg-slate-100 p-1 rounded-xl w-full sm:w-64">
                 <button 
                   onClick={() => setFilters(prev => ({ ...prev, statusScope: 'ativos' }))}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
+                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
                     filters.statusScope === 'ativos' ? 'bg-white text-black shadow-sm' : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -864,7 +864,7 @@ export default function ComplementaresModule({
                 </button>
                 <button 
                   onClick={() => setFilters(prev => ({ ...prev, statusScope: 'todos' }))}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
+                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
                     filters.statusScope === 'todos' ? 'bg-white text-black shadow-sm' : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -875,9 +875,9 @@ export default function ComplementaresModule({
               {/* Active filters indicators */}
               <div className="flex flex-wrap gap-2">
                 {filters.discipline && (
-                  <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xl text-xs text-indigo-800 font-semibold animate-pulse">
+                  <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xl text-xs text-slate-800 font-semibold animate-pulse">
                     <span>Gargalo: <strong>{DISCIPLINAS_CONFIG[filters.discipline as keyof typeof DISCIPLINAS_CONFIG].nome}</strong></span>
-                    <button onClick={() => setFilters(prev => ({ ...prev, discipline: '' }))} className="hover:text-indigo-950 ml-1 cursor-pointer">
+                    <button onClick={() => setFilters(prev => ({ ...prev, discipline: '' }))} className="hover:text-black ml-1 cursor-pointer">
                       <i className="fa-solid fa-circle-xmark text-sm"></i>
                     </button>
                   </div>
@@ -902,7 +902,7 @@ export default function ComplementaresModule({
                   placeholder="Buscar por nome, código ou responsável..." 
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                  className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs md:text-sm pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-400 outline-none transition"
+                  className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs md:text-sm pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-black outline-none transition"
                 />
               </div>
 
@@ -912,7 +912,7 @@ export default function ComplementaresModule({
                 <select 
                   value={filters.architect}
                   onChange={(e) => setFilters(prev => ({ ...prev, architect: e.target.value }))}
-                  className="w-full bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-xs py-2.5 px-3 rounded-xl focus:border-indigo-500 outline-none transition font-medium"
+                  className="w-full bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-xs py-2.5 px-3 rounded-xl focus:border-black outline-none transition font-medium"
                 >
                   <option value="">Todos</option>
                   {uniqueArchitects.map(arch => (
@@ -927,7 +927,7 @@ export default function ComplementaresModule({
                 <select 
                   value={filters.orderBy}
                   onChange={(e) => setFilters(prev => ({ ...prev, orderBy: e.target.value }))}
-                  className="bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-xs py-2.5 px-3 rounded-xl focus:border-indigo-500 outline-none transition font-medium"
+                  className="bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-xs py-2.5 px-3 rounded-xl focus:border-black outline-none transition font-medium"
                 >
                   <option value="codigo_desc">Código (Mais Novo)</option>
                   <option value="nome">Nome do Projeto</option>
@@ -950,13 +950,13 @@ export default function ComplementaresModule({
                   <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     {/* Left: Info */}
                     <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                      <div className="bg-slate-100 border border-slate-250 text-black px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider whitespace-nowrap shadow-sm">
+                      <div className="bg-slate-100 border border-slate-250 text-black px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wider whitespace-nowrap shadow-sm">
                         {proj.numero}
                       </div>
                       <div className="truncate">
                         <h3 
                           onClick={() => handleOpenProjectModal(proj)}
-                          className="font-bold text-slate-900 text-sm md:text-base hover:text-black cursor-pointer flex items-center gap-1.5"
+                          className="font-semibold text-slate-900 text-sm md:text-base hover:text-black cursor-pointer flex items-center gap-1.5"
                         >
                           {proj.nome}
                         </h3>
@@ -1008,10 +1008,10 @@ export default function ComplementaresModule({
                             className={`border rounded-xl p-3 cursor-pointer transition-all hover:bg-white relative flex flex-col justify-between h-28 ${getDisciplineCardBorder(d)}`}
                           >
                             <div className="flex items-center justify-between mb-1.5">
-                              <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                                 {DISCIPLINAS_CONFIG[discKey as keyof typeof DISCIPLINAS_CONFIG].nome}
                               </span>
-                              <span className={`text-[10px] font-bold ${getDisciplineStatusBadge(d).text}`}>
+                              <span className={`text-[10px] font-semibold ${getDisciplineStatusBadge(d).text}`}>
                                 <i className={DISCIPLINAS_CONFIG[discKey as keyof typeof DISCIPLINAS_CONFIG].icon}></i>
                               </span>
                             </div>
@@ -1022,7 +1022,7 @@ export default function ComplementaresModule({
                               )}
                               
                               {d.status === 'Compatibilizado' && (
-                                <div className="text-emerald-600 font-bold text-xs flex items-center gap-1">
+                                <div className="text-emerald-600 font-semibold text-xs flex items-center gap-1">
                                   <i className="fa-regular fa-circle-check"></i>
                                   <span>Aprovado</span>
                                 </div>
@@ -1032,7 +1032,7 @@ export default function ComplementaresModule({
                                 <div>
                                   <div className="flex items-center justify-between text-xs font-semibold">
                                     <span className="text-slate-700">Versão {getLastVersionNumber(d)}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${getDisciplineStatusBadge(d).bg} ${getDisciplineStatusBadge(d).text}`}>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold uppercase ${getDisciplineStatusBadge(d).bg} ${getDisciplineStatusBadge(d).text}`}>
                                       {getDisciplineStatusBadge(d).label.replace('Atrasado ', 'Atras.')}
                                     </span>
                                   </div>
@@ -1045,7 +1045,7 @@ export default function ComplementaresModule({
 
                             <div className="text-[9px] text-slate-400 border-t border-slate-100 pt-1.5 flex justify-between items-center mt-1">
                               <span>{getFooterDateLabel(d).title}</span>
-                              <span className="font-bold text-slate-600">{getFooterDateLabel(d).date}</span>
+                              <span className="font-semibold text-slate-600">{getFooterDateLabel(d).date}</span>
                             </div>
                           </div>
                         ))}
@@ -1054,7 +1054,7 @@ export default function ComplementaresModule({
                       <div className="mt-3 flex justify-end">
                         <button 
                           onClick={() => handleOpenProjectModal(proj)} 
-                          className="bg-slate-100 hover:bg-indigo-50 text-black text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+                          className="bg-slate-100 hover:bg-slate-100 text-black text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
                         >
                           <i className="fa-solid fa-timeline"></i>
                           <span>Fluxo Completo & Configurações</span>
@@ -1072,7 +1072,7 @@ export default function ComplementaresModule({
                 <div className="bg-slate-50 text-slate-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
                   <i className="fa-regular fa-folder-open text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-slate-700 text-base">Nenhum projeto encontrado</h4>
+                <h4 class="font-semibold text-slate-700 text-base">Nenhum projeto encontrado</h4>
                 <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
                   {filters.statusScope === 'ativos' 
                     ? 'Tente alterar os filtros de busca, alternar para a aba "Todos" ou cadastrar um novo projeto.'
@@ -1094,19 +1094,19 @@ export default function ComplementaresModule({
           <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col animate-scale-up">
             
             {/* Header Modal */}
-            <div className="bg-indigo-900 text-white px-6 py-5 flex justify-between items-start">
+            <div className="bg-black text-white px-6 py-5 flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="bg-black text-indigo-100 font-bold px-2.5 py-0.5 rounded text-xs">{modalProjectData.numero}</span>
-                  <h3 className="text-lg font-bold">{modalProjectData.nome}</h3>
+                  <span className="bg-black text-white font-semibold px-2.5 py-0.5 rounded text-xs">{modalProjectData.numero}</span>
+                  <h3 className="text-lg font-semibold">{modalProjectData.nome}</h3>
                 </div>
-                <p className="text-xs text-indigo-200 mt-1.5 flex items-center gap-3">
-                  <span><i class="fa-solid fa-user-circle mr-1"></i> Arquiteto Responsável: <span class="font-bold">{modalProjectData.arquiteto}</span></span>
+                <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-3">
+                  <span><i class="fa-solid fa-user-circle mr-1"></i> Arquiteto Responsável: <span class="font-semibold">{modalProjectData.arquiteto}</span></span>
                 </p>
               </div>
               <button 
                 onClick={() => setModalProjectOpen(false)} 
-                className="text-indigo-200 hover:text-white transition text-lg bg-indigo-950 p-2 rounded-xl cursor-pointer"
+                className="text-slate-400 hover:text-white transition text-lg bg-slate-900 p-2 rounded-xl cursor-pointer"
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
@@ -1116,7 +1116,7 @@ export default function ComplementaresModule({
             <div className="flex-1 overflow-y-auto p-6 bg-slate-50 grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Coluna 1: Lista de Disciplinas */}
               <div className="lg:col-span-1 space-y-3">
-                <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Disciplinas do Prédio</h4>
+                <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Disciplinas do Prédio</h4>
                 {Object.entries(modalProjectData.disciplinas).map(([discKey, d]) => (
                   <div 
                     key={discKey}
@@ -1124,8 +1124,8 @@ export default function ComplementaresModule({
                       setSelectedDiscKey(discKey);
                       setNewVersionFormOpen(false);
                     }}
-                    className={`p-3 bg-white border rounded-xl cursor-pointer hover:border-indigo-300 transition flex items-center justify-between ${
-                      selectedDiscKey === discKey ? 'border-indigo-600 ring-2 ring-indigo-100' : 'border-slate-200'
+                    className={`p-3 bg-white border rounded-xl cursor-pointer hover:border-slate-350 transition flex items-center justify-between ${
+                      selectedDiscKey === discKey ? 'border-black ring-2 ring-slate-100' : 'border-slate-200'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -1133,7 +1133,7 @@ export default function ComplementaresModule({
                         <i className={`${DISCIPLINAS_CONFIG[discKey as keyof typeof DISCIPLINAS_CONFIG].icon} text-base`}></i>
                       </span>
                       <div>
-                        <span className="text-xs font-bold text-slate-800 block">{DISCIPLINAS_CONFIG[discKey as keyof typeof DISCIPLINAS_CONFIG].nome}</span>
+                        <span className="text-xs font-semibold text-slate-800 block">{DISCIPLINAS_CONFIG[discKey as keyof typeof DISCIPLINAS_CONFIG].nome}</span>
                         <span className="text-[10px] text-slate-400 font-semibold">{d.status}</span>
                       </div>
                     </div>
@@ -1152,7 +1152,7 @@ export default function ComplementaresModule({
                         {/* Editor de Responsável e Status */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-3">
                           <div>
-                            <h4 className="font-bold text-slate-900 text-base">{DISCIPLINAS_CONFIG[selectedDiscKey as keyof typeof DISCIPLINAS_CONFIG].nome}</h4>
+                            <h4 className="font-semibold text-slate-900 text-base">{DISCIPLINAS_CONFIG[selectedDiscKey as keyof typeof DISCIPLINAS_CONFIG].nome}</h4>
                             <div className="mt-1 flex items-center gap-2">
                               <span className="text-xs text-slate-400 font-semibold">Eng. Projetista:</span>
                               <input 
@@ -1161,7 +1161,7 @@ export default function ComplementaresModule({
                                 onChange={(e) => handleEngineerChange(selectedDiscKey, e.target.value)}
                                 placeholder="Definir responsável..."
                                 disabled={userRole === 'estagiario'}
-                                className="text-xs font-bold text-black bg-slate-50 border border-slate-200 focus:bg-white rounded px-2 py-0.5 outline-none transition w-44"
+                                className="text-xs font-semibold text-black bg-slate-50 border border-slate-200 focus:bg-white rounded px-2 py-0.5 outline-none transition w-44"
                               />
                             </div>
                             <div className="mt-2.5 flex flex-col sm:flex-row gap-3 bg-slate-50 p-2 rounded-lg border border-slate-200">
@@ -1171,7 +1171,7 @@ export default function ComplementaresModule({
                                   checked={d.arqEnviado || false}
                                   onChange={(e) => handleCheckboxChange(selectedDiscKey, 'arqEnviado', e.target.checked)}
                                   disabled={userRole === 'estagiario'}
-                                  className="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5 cursor-pointer"
+                                  className="rounded text-black focus:ring-black w-3.5 h-3.5 cursor-pointer"
                                 />
                                 <span>Arq. Enviado para o Projetista</span>
                               </label>
@@ -1181,7 +1181,7 @@ export default function ComplementaresModule({
                                   checked={d.reuniaoApresentacao || false}
                                   onChange={(e) => handleCheckboxChange(selectedDiscKey, 'reuniaoApresentacao', e.target.checked)}
                                   disabled={userRole === 'estagiario'}
-                                  className="rounded text-black focus:ring-indigo-400 w-3.5 h-3.5 cursor-pointer"
+                                  className="rounded text-black focus:ring-black w-3.5 h-3.5 cursor-pointer"
                                 />
                                 <span>Reunião de Alinhamento Realizada</span>
                               </label>
@@ -1194,7 +1194,7 @@ export default function ComplementaresModule({
                               value={d.status}
                               onChange={(e) => handleDisciplineStatusChange(selectedDiscKey, e.target.value)}
                               disabled={userRole === 'estagiario'}
-                              className="bg-slate-100 border border-slate-250 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:border-indigo-500 focus:bg-white outline-none"
+                              className="bg-slate-100 border border-slate-250 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:border-black focus:bg-white outline-none"
                             >
                               <option value="Em andamento">Em andamento</option>
                               <option value="Compatibilizado">Compatibilizado / Aprovado</option>
@@ -1206,12 +1206,12 @@ export default function ComplementaresModule({
                         {/* HISTÓRICO DE REVISÕES */}
                         <div className="mb-4">
                           <div className="flex justify-between items-center mb-3">
-                            <span className="text-xs font-extrabold text-slate-450 uppercase tracking-wider">Histórico de Versões</span>
+                            <span className="text-xs font-semibold text-slate-450 uppercase tracking-wider">Histórico de Versões</span>
                             {d.status === 'Em andamento' && !newVersionFormOpen && (
                               <button 
                                 onClick={handleInitNewVersionForm}
                                 disabled={userRole === 'estagiario'}
-                                className="text-xs bg-slate-100 hover:bg-indigo-50 text-black font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+                                className="text-xs bg-slate-100 hover:bg-slate-100 text-black font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
                               >
                                 <i className="fa-solid fa-plus"></i>
                                 <span>Entrada de Versão</span>
@@ -1222,31 +1222,31 @@ export default function ComplementaresModule({
                           {/* FORMULÁRIO DE NOVA REVISÃO */}
                           {newVersionFormOpen && (
                             <div className="bg-slate-50 p-4 rounded-xl border border-slate-350 mb-5 animate-scale-up">
-                              <h5 className="font-bold text-xs text-slate-700 mb-3 flex items-center gap-1.5">
+                              <h5 className="font-semibold text-xs text-slate-700 mb-3 flex items-center gap-1.5">
                                 <span className="bg-[#1A1A1A] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">{newVersionFormData.versao}</span>
                                 Registrando Nova Entrada de Revisão
                               </h5>
 
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1">Data de Recebimento</label>
+                                  <label className="block text-[10px] font-semibold text-slate-450 uppercase mb-1">Data de Recebimento</label>
                                   <input 
                                     type="date" 
                                     value={newVersionFormData.recebimento}
                                     onChange={(e) => handleNewVersionDateChange('recebimento', e.target.value)}
-                                    className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-semibold outline-none focus:border-indigo-500"
+                                    className="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-semibold outline-none focus:border-black"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1">Prazo de Devolução</label>
+                                  <label className="block text-[10px] font-semibold text-slate-455 uppercase mb-1">Prazo de Devolução</label>
                                   <div className="flex gap-2">
                                     <input 
                                       type="date" 
                                       value={newVersionFormData.limite}
                                       onChange={(e) => handleNewVersionDateChange('limite', e.target.value)}
-                                      className="flex-1 bg-white border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 outline-none focus:border-indigo-500"
+                                      className="flex-1 bg-white border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:border-black"
                                     />
-                                    <div className="bg-slate-100 border border-slate-250 text-black px-2.5 py-1 rounded-lg flex items-center justify-center text-[10px] font-extrabold whitespace-nowrap">
+                                    <div className="bg-slate-100 border border-slate-250 text-black px-2.5 py-1 rounded-lg flex items-center justify-center text-[10px] font-semibold whitespace-nowrap">
                                       {newVersionFormData.computedDays} d úteis
                                     </div>
                                   </div>
@@ -1262,7 +1262,7 @@ export default function ComplementaresModule({
                                 </button>
                                 <button 
                                   onClick={handleSaveNewVersion}
-                                  className="px-3 py-1.5 bg-[#1A1A1A] hover:bg-black text-white rounded-lg text-xs font-bold cursor-pointer"
+                                  className="px-3 py-1.5 bg-[#1A1A1A] hover:bg-black text-white rounded-lg text-xs font-semibold cursor-pointer"
                                 >
                                   Registrar Entrada
                                 </button>
@@ -1273,12 +1273,12 @@ export default function ComplementaresModule({
                           {/* LINHA DO TEMPO */}
                           <div className="space-y-4 max-h-60 overflow-y-auto pr-1">
                             {d.historico.slice().reverse().map(h => (
-                              <div key={h.versao} className="border-l-2 border-indigo-200 pl-4 relative py-1">
+                              <div key={h.versao} className="border-l-2 border-slate-300 pl-4 relative py-1">
                                 <div className="absolute -left-[7px] top-1.5 bg-[#1A1A1A] text-white w-3 h-3 rounded-full flex items-center justify-center"></div>
                                 
                                 <div className="flex justify-between items-start text-xs">
                                   <div className="w-full">
-                                    <span className="font-extrabold text-slate-800 text-sm">Versão {h.versao}</span>
+                                    <span className="font-semibold text-slate-800 text-sm">Versão {h.versao}</span>
                                     
                                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-slate-400">
                                       <span>Recebido: <strong className="text-slate-650">{formatDate(h.recebimento)}</strong></span>
@@ -1288,7 +1288,7 @@ export default function ComplementaresModule({
                                     {/* Date selectors inline */}
                                     <div className="mt-2.5 flex flex-wrap gap-3">
                                       <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">Devolvido em:</span>
+                                        <span className="text-[10px] font-semibold text-slate-400 uppercase">Devolvido em:</span>
                                         <input 
                                           type="date" 
                                           value={h.devolucao || ''}
@@ -1298,7 +1298,7 @@ export default function ComplementaresModule({
                                         />
                                       </div>
                                       <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">Previsão Retorno:</span>
+                                        <span className="text-[10px] font-semibold text-slate-400 uppercase">Previsão Retorno:</span>
                                         <input 
                                           type="date" 
                                           value={h.previsao || ''}
@@ -1333,7 +1333,7 @@ export default function ComplementaresModule({
             <div className="border-t border-slate-100 p-4 bg-slate-50 flex justify-between">
               <button 
                 onClick={() => handleConfirmDeleteProject(modalProjectData)} 
-                className="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                className="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
               >
                 <i className="fa-regular fa-trash-can"></i>
                 <span>Excluir Projeto</span>
@@ -1354,7 +1354,7 @@ export default function ComplementaresModule({
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
             <div className="bg-slate-900 text-white px-5 py-4 flex justify-between items-center">
-              <h3 className="font-bold text-sm md:text-base"><i className="fa-solid fa-folder-plus text-indigo-400 mr-2"></i>Novo Empreendimento</h3>
+              <h3 className="font-semibold text-sm md:text-base"><i className="fa-solid fa-folder-plus text-slate-400 mr-2"></i>Novo Empreendimento</h3>
               <button onClick={() => setModalNewProjectOpen(false)} className="text-slate-400 hover:text-white transition cursor-pointer">
                 <i className="fa-solid fa-xmark"></i>
               </button>
@@ -1362,7 +1362,7 @@ export default function ComplementaresModule({
 
             <div className="p-5 space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-450 uppercase mb-1">Código de Controle</label>
+                <label className="block text-[11px] font-semibold text-slate-450 uppercase mb-1">Código de Controle</label>
                 <input 
                   type="text" 
                   value={newProjectForm.numero}
@@ -1374,7 +1374,7 @@ export default function ComplementaresModule({
                 <span className="text-[10px] text-slate-400 mt-1 block">O código será formatado automaticamente como YYYY-XXX</span>
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-slate-450 uppercase mb-1">Nome do Empreendimento</label>
+                <label className="block text-[11px] font-semibold text-slate-450 uppercase mb-1">Nome do Empreendimento</label>
                 <input 
                   type="text" 
                   value={newProjectForm.nome}
@@ -1384,7 +1384,7 @@ export default function ComplementaresModule({
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-slate-455 uppercase mb-1">Arquiteto Responsável</label>
+                <label className="block text-[11px] font-semibold text-slate-455 uppercase mb-1">Arquiteto Responsável</label>
                 <input 
                   type="text" 
                   value={newProjectForm.arquiteto}
@@ -1408,7 +1408,7 @@ export default function ComplementaresModule({
               </button>
               <button 
                 onClick={handleCreateProject} 
-                className="px-5 py-2 bg-[#1A1A1A] hover:bg-black text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-50 cursor-pointer"
+                className="px-5 py-2 bg-[#1A1A1A] hover:bg-black text-white rounded-xl text-xs font-semibold shadow-lg shadow-slate-50 cursor-pointer"
               >
                 Criar Prédio
               </button>
@@ -1424,8 +1424,8 @@ export default function ComplementaresModule({
       {customAlert.show && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-55 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl p-5 animate-scale-up">
-            <h4 className="font-bold text-slate-950 text-sm md:text-base flex items-center gap-2">
-              <i className="fa-solid fa-circle-exclamation text-indigo-500"></i>
+            <h4 className="font-semibold text-slate-950 text-sm md:text-base flex items-center gap-2">
+              <i className="fa-solid fa-circle-exclamation text-slate-500"></i>
               Atenção
             </h4>
             <p className="text-xs text-slate-600 mt-3 leading-relaxed">
@@ -1434,7 +1434,7 @@ export default function ComplementaresModule({
             <div className="mt-4 flex justify-end">
               <button 
                 onClick={() => setCustomAlert({ show: false, message: '' })}
-                className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
+                className="bg-slate-900 hover:bg-black text-white text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer"
               >
                 Entendi
               </button>
@@ -1447,8 +1447,8 @@ export default function ComplementaresModule({
       {customConfirm.show && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-55 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl p-5 animate-scale-up">
-            <h4 className="font-bold text-slate-950 text-sm flex items-center gap-2">
-              <i className="fa-solid fa-circle-question text-indigo-500"></i>
+            <h4 className="font-semibold text-slate-950 text-sm flex items-center gap-2">
+              <i className="fa-solid fa-circle-question text-slate-500"></i>
               Confirmação
             </h4>
             <p className="text-xs text-slate-600 mt-3 leading-relaxed">
@@ -1466,7 +1466,7 @@ export default function ComplementaresModule({
                   if (customConfirm.onConfirm) customConfirm.onConfirm();
                   setCustomConfirm({ show: false, message: '', onConfirm: null });
                 }}
-                className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
+                className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer"
               >
                 Confirmar
               </button>

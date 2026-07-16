@@ -46,7 +46,7 @@ export default function SenhasTab({
         {/* Header with segmented tabs */}
         <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 gap-4">
           <div>
-            <h3 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
+            <h3 className="font-semibold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
               🔑 Cofre de Acessos e Credenciais
             </h3>
             <p className="text-xs text-slate-400 mt-1">
@@ -62,7 +62,7 @@ export default function SenhasTab({
                 setCredentialsTab('prefeitura');
                 setCredSearchText('');
               }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
                 credentialsTab === 'prefeitura'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'
@@ -76,7 +76,7 @@ export default function SenhasTab({
                 setCredentialsTab('email');
                 setCredSearchText('');
               }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
                 credentialsTab === 'email'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'
@@ -121,7 +121,7 @@ export default function SenhasTab({
                 'success'
               );
             }}
-            className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow"
+            className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow"
           >
             <Plus className="w-4 h-4" /> 
             {credentialsTab === 'prefeitura' ? 'Adicionar Portal' : 'Adicionar E-mail'}
@@ -151,12 +151,12 @@ export default function SenhasTab({
                 return (
                   <tr key={cred.id} className="hover:bg-slate-50/40 transition-colors">
                     {/* Service / Prefeitura */}
-                    <td className="p-1 px-3 border-r border-slate-200/60 font-bold">
+                    <td className="p-1 px-3 border-r border-slate-200/60 font-semibold">
                       <input
                         type="text"
                         value={cred.prefeitura}
                         onChange={e => handleCredChange(cred.id, 'prefeitura', e.target.value)}
-                        className="w-full bg-transparent border-none p-1 font-bold text-slate-800 focus:bg-slate-50 focus:ring-0 text-[11px] rounded focus:outline-none"
+                        className="w-full bg-transparent border-none p-1 font-semibold text-slate-800 focus:bg-slate-50 focus:ring-0 text-[11px] rounded focus:outline-none"
                         placeholder={credentialsTab === 'prefeitura' ? "Câmara Municipal" : "Gmail, Outlook, etc."}
                       />
                     </td>
@@ -206,7 +206,7 @@ export default function SenhasTab({
                         </button>
                       ) : confirmDeleteCredId === cred.id ? (
                         <div className="flex items-center justify-center gap-1 bg-slate-900 text-white p-1 rounded-lg">
-                          <span className="text-[8px] font-bold uppercase tracking-wider">Apagar?</span>
+                          <span className="text-[8px] font-semibold uppercase tracking-wider">Apagar?</span>
                           <button
                             type="button"
                             onClick={() => {
@@ -215,14 +215,14 @@ export default function SenhasTab({
                               triggerToast('Credencial removida!', 'warning');
                               setConfirmDeleteCredId(null);
                             }}
-                            className="px-1 py-0.5 bg-white text-slate-900 hover:bg-slate-50 rounded text-[9px] font-bold cursor-pointer"
+                            className="px-1 py-0.5 bg-white text-slate-900 hover:bg-slate-50 rounded text-[9px] font-semibold cursor-pointer"
                           >
                             Sim
                           </button>
                           <button
                             type="button"
                             onClick={() => setConfirmDeleteCredId(null)}
-                            className="px-1 py-0.5 bg-slate-800 text-white hover:text-white rounded text-[9px] font-bold cursor-pointer"
+                            className="px-1 py-0.5 bg-slate-800 text-white hover:text-white rounded text-[9px] font-semibold cursor-pointer"
                           >
                             Não
                           </button>

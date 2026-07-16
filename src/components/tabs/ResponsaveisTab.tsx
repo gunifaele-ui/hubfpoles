@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Trash2 } from 'lucide-react';
+import { Search, Trash2, Users } from 'lucide-react';
 import { Project, Task } from '../../types';
 import { ARCHITECTS } from '../../constants';
 
@@ -60,60 +60,56 @@ export default function ResponsaveisTab({
   });
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12">
-      {/* Main Title Header */}
-      <div className="p-6 bg-slate-900 text-white rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h2 className="text-base font-bold uppercase tracking-tight font-sans">Responsáveis por Projeto</h2>
-          <p className="text-xs text-slate-300">Atribua os responsáveis principais e secundários por projeto e acompanhe o estado operacional em tempo real.</p>
-        </div>
+    <div className="space-y-6 animate-fade-in pb-12 font-sans">
+      {/* Title block */}
+      <div>
+        <h2 className="text-base font-semibold uppercase tracking-tight text-slate-900 flex items-center gap-2 font-sans">
+          <Users className="w-5 h-5 text-slate-800" />
+          <span>Projetos por Responsáveis</span>
+        </h2>
+        <p className="text-xs text-slate-500 mt-1">Atribuição de equipe e gestão de responsáveis técnicos primários e secundários.</p>
       </div>
 
       {/* Dynamic Statistics Block */}
-      <div className="space-y-2">
-        <h3 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold px-1 flex items-center gap-1.5">
-          📊 Estatísticas de Alocação (Primário ou Secundário)
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {stats.map(s => {
-            const isSelected = respFilter === s.prof;
-            return (
-              <button
-                key={s.prof}
-                type="button"
-                onClick={() => {
-                  setRespFilter(isSelected ? 'todos' : s.prof);
-                  triggerToast(`Filtrado por: ${s.prof}`, 'info');
-                }}
-                className={`p-3 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden flex flex-col justify-between h-24 cursor-pointer ${
-                  isSelected 
-                    ? 'border-slate-900 bg-slate-900 text-white shadow-md' 
-                    : 'border-slate-200/60 bg-white hover:border-slate-300 hover:shadow-sm'
-                }`}
-              >
-                <div>
-                  <h4 className="text-[11px] font-bold font-sans line-clamp-1">{s.prof}</h4>
-                  <span className={`text-[9px] font-mono ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>Total: {s.total} {s.total === 1 ? 'proj' : 'projs'}</span>
-                </div>
-                <div className="flex gap-1 items-center text-[9px] font-mono font-bold mt-1">
-                  <span className={`px-1 rounded ${isSelected ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
-                    {s.activeCount} At
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {stats.map(s => {
+          const isSelected = respFilter === s.prof;
+          return (
+            <button
+              key={s.prof}
+              type="button"
+              onClick={() => {
+                setRespFilter(isSelected ? 'todos' : s.prof);
+                triggerToast(`Filtrado por: ${s.prof}`, 'info');
+              }}
+              className={`p-3 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden flex flex-col justify-between h-24 cursor-pointer ${
+                isSelected 
+                  ? 'border-slate-900 bg-slate-900 text-white shadow-md' 
+                  : 'border-slate-200/60 bg-white hover:border-slate-300 hover:shadow-sm'
+              }`}
+            >
+              <div>
+                <h4 className="text-[11px] font-semibold font-sans line-clamp-1">{s.prof}</h4>
+                <span className={`text-[9px] font-sans ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>Total: {s.total} {s.total === 1 ? 'proj' : 'projs'}</span>
+              </div>
+              <div className="flex flex-wrap gap-1 items-center text-[8px] font-sans font-semibold mt-1">
+                <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
+                  {s.activeCount} Ativos
+                </span>
+                {s.standbyCount > 0 && (
+                  <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/10 text-white/90' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
+                    {s.standbyCount} Standby
                   </span>
-                  {s.standbyCount > 0 && (
-                    <span className={`px-1 rounded ${isSelected ? 'bg-white/10 text-white/90' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
-                      {s.standbyCount} St
-                    </span>
-                  )}
-                  {s.pendingCount > 0 && (
-                    <span className={`px-1 rounded ${isSelected ? 'bg-white/10 text-white/70' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
-                      {s.pendingCount} Pe
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                )}
+                {s.pendingCount > 0 && (
+                  <span className={`px-1 py-0.5 rounded ${isSelected ? 'bg-white/10 text-white/70' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                    {s.pendingCount} Pendentes
+                  </span>
+                )}
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Filters Block */}
@@ -136,7 +132,7 @@ export default function ResponsaveisTab({
             <select
               value={respFilter}
               onChange={(e) => setRespFilter(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
             >
               <option value="todos">👥 Todos os Responsáveis</option>
               {PROFESSIONALS.map(prof => (
@@ -150,7 +146,7 @@ export default function ResponsaveisTab({
             <select
               value={projStatusFilter}
               onChange={(e) => setProjStatusFilter(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none hover:bg-slate-50 transition-colors"
             >
               <option value="todos">🔍 Todos os Estados</option>
               <option value="ativo">Ativo</option>
@@ -188,12 +184,12 @@ export default function ResponsaveisTab({
                     }`}
                   >
                     {/* Project Code */}
-                    <td className="p-1 px-3 border-r border-slate-100 text-center font-mono font-bold text-xs text-slate-500">
+                    <td className="p-1 px-3 border-r border-slate-100 text-center font-mono font-semibold text-xs text-slate-500">
                       {proj.code || proj.id}
                     </td>
 
                     {/* Project Name */}
-                    <td className="p-1 px-3 border-r border-slate-100 font-bold font-sans text-xs text-slate-800">
+                    <td className="p-1 px-3 border-r border-slate-100 font-semibold font-sans text-xs text-slate-800">
                       {proj.name}
                     </td>
 
@@ -240,7 +236,7 @@ export default function ResponsaveisTab({
                           setProjects(updated);
                           triggerToast(`Projeto "${proj.name}" definido como ${e.target.value}!`, 'info');
                         }}
-                        className={`p-1 rounded font-bold text-[9px] uppercase cursor-pointer border text-center ${
+                        className={`p-1 rounded font-semibold text-[9px] uppercase cursor-pointer border text-center ${
                           isStandby 
                             ? 'bg-amber-50 text-amber-700 border-amber-200' 
                             : proj.status === 'Pendente' 
@@ -265,7 +261,7 @@ export default function ResponsaveisTab({
                             setProjects(updated);
                             triggerToast(isStandby ? `Projeto "${proj.name}" Ativado!` : `Projeto "${proj.name}" em Standby!`, 'warning');
                           }}
-                          className={`px-2 py-1 rounded-lg border font-bold text-[10px] uppercase transition-all cursor-pointer flex items-center gap-1 ${
+                          className={`px-2 py-1 rounded-lg border font-semibold text-[10px] uppercase transition-all cursor-pointer flex items-center gap-1 ${
                             isStandby
                               ? 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100'
                               : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'

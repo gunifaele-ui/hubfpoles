@@ -22,6 +22,10 @@ export interface Project {
   secundario: string;
   status: string;
   code?: string;
+  tabletStatus?: 'Não Necessita' | 'Planejado' | 'Encomendado' | 'Entregue';
+  placaStatus?: 'Não Necessita' | 'Planejado' | 'Encomendado' | 'Entregue';
+  tabletMonth?: string;
+  placaMonth?: string;
 }
 
 export interface Complementar {
@@ -154,3 +158,22 @@ export interface EngineeringProject {
   };
 }
 
+export interface PartnerProject {
+  projectName: string;
+  year: number;
+  role: string;
+  status: string;
+}
+
+export interface Partner {
+  id: string;
+  name: string;
+  type: string; // e.g. 'Projetista Complementar', 'Fornecedor', 'Parceiro', etc.
+  recommendationLevel: 'Altamente Recomendado' | 'Recomendado' | 'Regular' | 'Não Recomendado' | string;
+  recommendationScore: number;
+  projectsCount: number;
+  notes: string;
+  projectsHistory: PartnerProject[];
+  contactEmail?: string;
+  contactPhone?: string;
+}
